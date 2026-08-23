@@ -1,0 +1,35 @@
+# --- Laravel app (@core) ---
+@core/.env
+@core/vendor/
+@core/node_modules/
+@core/storage/logs/*
+@core/storage/framework/cache/*
+@core/storage/framework/sessions/*
+@core/storage/framework/views/*
+@core/storage/debugbar/*
+!@core/storage/logs/.gitignore
+!@core/storage/framework/cache/.gitignore
+!@core/storage/framework/sessions/.gitignore
+!@core/storage/framework/views/.gitignore
+@core/database/database.sqlite
+@core/server.log
+@core/dev-watchdog.ps1
+@core/.phpunit.result.cache
+@core/_healthcheck.php
+
+# --- Blockchain ---
+blockchain/node_modules/
+blockchain/artifacts/
+blockchain/cache/
+blockchain/hardhat-node.log*
+
+# --- Root junk ---
+medifund-hostinger-upload.zip
+serve.log
+install/
+
+# --- OS / editor ---
+Thumbs.db
+.DS_Store
+.idea/
+.vscode/
