@@ -1,0 +1,194 @@
+@font-face {
+    font-family: Flaticon;
+    src: url(../webfonts/Flaticon.eot);
+    src: url(../webfonts/Flaticon.eot?#iefix) format("embedded-opentype"), url(../webfonts/Flaticon.woff) format("woff"), url(../webfonts/Flaticon.ttf) format("truetype"), url(../webfonts/Flaticon.svg#Flaticon) format("svg");
+    font-weight: 400;
+    font-style: normal;
+}
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+    @font-face {
+        font-family: Flaticon;
+        src: url(../webfonts/Flaticon.svg#Flaticon) format("svg");
+    }
+}
+[class*=" flaticon-"]:after,
+[class*=" flaticon-"]:before,
+[class^="flaticon-"]:after,
+[class^="flaticon-"]:before {
+    font-family: Flaticon;
+    font-style: normal;
+}
+.flaticon-mail:before {
+    content: "\f100";
+}
+.flaticon-man:before {
+    content: "\f101";
+}
+.flaticon-house:before {
+    content: "\f102";
+}
+.flaticon-package:before {
+    content: "\f103";
+}
+.flaticon-donation:before {
+    content: "\f104";
+}
+.flaticon-donation-1:before {
+    content: "\f105";
+}
+.flaticon-money-bag:before {
+    content: "\f106";
+}
+.flaticon-smartphone:before {
+    content: "\f107";
+}
+.flaticon-charity:before {
+    content: "\f108";
+}
+.flaticon-donation-2:before {
+    content: "\f109";
+}
+.flaticon-woman:before {
+    content: "\f10a";
+}
+.flaticon-gift:before {
+    content: "\f10b";
+}
+.flaticon-ribbon:before {
+    content: "\f10c";
+}
+.flaticon-donate:before {
+    content: "\f10d";
+}
+.flaticon-loudspeaker:before {
+    content: "\f10e";
+}
+.flaticon-donation-3:before {
+    content: "\f10f";
+}
+.flaticon-ribbon-1:before {
+    content: "\f110";
+}
+.flaticon-donate-1:before {
+    content: "\f111";
+}
+.flaticon-bread:before {
+    content: "\f112";
+}
+.flaticon-donation-4:before {
+    content: "\f113";
+}
+.flaticon-house-1:before {
+    content: "\f114";
+}
+.flaticon-solidarity:before {
+    content: "\f115";
+}
+.flaticon-donation-5:before {
+    content: "\f116";
+}
+.flaticon-balloon:before {
+    content: "\f117";
+}
+.flaticon-shirt:before {
+    content: "\f118";
+}
+.flaticon-wheelchair:before {
+    content: "\f119";
+}
+.flaticon-donation-6:before {
+    content: "\f11a";
+}
+.flaticon-church:before {
+    content: "\f11b";
+}
+.flaticon-ribbon-2:before {
+    content: "\f11c";
+}
+.flaticon-donate-2:before {
+    content: "\f11d";
+}
+.flaticon-blood:before {
+    content: "\f11e";
+}
+.flaticon-charity-1:before {
+    content: "\f11f";
+}
+.flaticon-first-aid-kit:before {
+    content: "\f120";
+}
+.flaticon-solidarity-1:before {
+    content: "\f121";
+}
+.flaticon-donation-7:before {
+    content: "\f122";
+}
+.flaticon-transfusion:before {
+    content: "\f123";
+}
+.flaticon-money:before {
+    content: "\f124";
+}
+.flaticon-balance:before {
+    content: "\f125";
+}
+.flaticon-world-grid:before {
+    content: "\f126";
+}
+.flaticon-bible:before {
+    content: "\f127";
+}
+.flaticon-location:before {
+    content: "\f128";
+}
+.flaticon-heart:before {
+    content: "\f129";
+}
+.flaticon-charity-2:before {
+    content: "\f12a";
+}
+.flaticon-phone-call:before {
+    content: "\f12b";
+}
+.flaticon-call:before {
+    content: "\f12c";
+}
+.flaticon-pin:before {
+    content: "\f12d";
+}
+.flaticon-cursor:before {
+    content: "\f12e";
+}
+.flaticon-pin-1:before {
+    content: "\f12f";
+}
+.flaticon-send:before {
+    content: "\f130";
+}
+.flaticon-envelope:before {
+    content: "\f131";
+}
+.flaticon-email:before {
+    content: "\f132";
+}
+.flaticon-paper-plane:before {
+    content: "\f133";
+}
+.flaticon-open:before {
+    content: "\f134";
+}
+.flaticon-clock:before {
+    content: "\f135";
+}
+.flaticon-clock-circular-outline:before {
+    content: "\f136";
+}
+.flaticon-loupe:before {
+    content: "\f137";
+}
+.flaticon-search:before {
+    content: "\f138";
+}
+.flaticon-magnifying-glass:before {
+    content: "\f139";
+}

@@ -1,0 +1,1 @@
+const hre=require('hardhat');const fs=require('fs');async function main(){const d=JSON.parse(fs.readFileSync('deployments.json','utf8'));const mfc=await hre.ethers.getContractAt('MediFundCampaign',d.contracts.MediFundCampaign);const tx=await mfc.updateCampaignStatus(6,0);await tx.wait();console.log('campaign#6 donatable=',await mfc.isDonatable(6));}main();

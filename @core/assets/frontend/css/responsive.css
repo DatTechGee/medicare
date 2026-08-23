@@ -1,0 +1,1139 @@
+@media only screen and (max-width: 1366px) {
+    .header-area .header-inner-06 .title {
+        font-size: 50px;
+        line-height: 80px;
+    }
+    .header-area .header-inner-06 .progress-wrapper .progress-item .single-progressbar {
+        max-width: 250px;
+    }
+    .top-shapes img {
+        top: -20px;
+    }
+    .section-shapes img:nth-child(1) {
+        top: -35px;
+    }
+    .section-shapes img:nth-child(2) {
+        bottom: -30px;
+    }
+    
+}
+@media only screen and (min-width: 992px) and (max-width: 1199px) {
+    .header-area .title {
+        font-size: 100px;
+        line-height: 110px;
+    }
+    .topbar-inner .right-contnet .volunteer-right {
+        display: none;
+    }
+        .header-area .header-inner-04 .title {
+        font-size: 65px;
+    }
+    .top-shapes img {
+        top: -30px;
+        min-height: 75px;
+    }
+    .section-shapes img {
+        min-height: 75px;
+    }
+    .section-shapes img:nth-child(1) {
+        top: -40px;
+    }
+    .section-shapes img:nth-child(2) {
+        bottom: -40px;
+    }
+    .section-title .title {
+        font-size: 50px;
+    }
+    .header-area .inner-right-contents .inner-content-all .donate-input .donate-lists li {
+        width: 65px;
+        font-size: 18px;
+    }
+    .single-events .events-flex-contents .events-date {
+        display: inline-flex;
+        min-height: 150px;
+        min-width: 150px;
+        margin-bottom: 20px;
+    }
+    .single-events .events-flex-contents {
+        display: block;
+    }
+    .single-events .events-flex-contents .events-content .title {
+        font-size: 26px;
+    }
+    .recent-single .recent-contents .title {
+        font-size: 22px;
+    }
+    .help-and-support-right .support-img .thumb {
+        width: 100%;
+        margin-top: 40px;
+    }
+    .help-and-support-right .support-img .thumb img {
+        width: 100%;
+    }
+    .help-and-support-right .donation-content {
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+    .volunteer-single-item::after {
+        left: 0;
+        transform: initial;
+        top: 0;
+        width: 100%;
+        height: 100%;
+    }
+    .attend-events-area .attend-title-content {
+        display: block;
+    }
+    .attend-events-area .attend-title-content .section-title {
+        width: 100%;
+    }
+    .attend-events-area .attend-title-content .section-paragraph {
+        width: 100%;
+        padding-right: 0;
+    }
+    .contact_info_list li.single-info-item-02 {
+        margin-left: 0;
+    }
+    .header-bottom-area .support-single-item {
+        margin-top: 40px;
+    }
+    .support-single-img img {
+        width: 100%;
+    }
+    .problem-area .problem-area-wrapper {
+        padding: 75px 45px 45px;
+    }
+    .volunteer-single-item-lists .volunteer-single-item {
+        padding: 40px 30px 70px;
+    }
+    .header-bottom-area .bg-img {
+        width: 40%;
+    }
+    .about-area .about-title-content {
+        display: block;
+    }
+    .about-area .about-title-content .section-title {
+        width: 100%;
+    }
+    .about-area .about-title-content .section-paragraph {
+        width: 100%;
+    }
+    .widget.widget_event ul {
+        padding-left: 30px;
+        padding-right: 30px;
+    }
+    .widget.widget_map .contact_map-02 {
+        padding: 15px 30px 45px 30px;
+    }
+    .widget .widget-title.style-02,
+    .widget .widget-title.style-01 {
+        padding: 20px 30px;
+    }
+    .widget_tag_cloud .tagcloud {
+        padding: 0 30px;
+    }
+    .our-latest-area.padding-bottom-130.padding-top-120 {
+        padding-bottom: 90px;
+    }
+    .volunteer-area.padding-bottom-120 {
+        padding-bottom: 90px;
+    }
+    .header-area .header-inner-05 .title {
+        font-size: 80px;
+    }
+    .rise-area .single-donate .form-control {
+        width: 140px;
+    }
+    .rise-flex-contents .single-donate .title {
+        font-size: 28px;
+    }
+    .rise-flex-contents {
+        padding: 50px 30px 20px;
+    }
+    .rise-flex-contents .single-donate .donate-btn {
+        font-size: 17px;
+    }
+    .single-events.style-02 {
+        margin-top: 50px;
+    }
+    .navbar-area.nav-style-02.charity-nav-06 .nav-container .navbar-collapse .navbar-nav li {
+        margin-left: 10px;
+    }
+    .navbar-area.nav-style-02.charity-nav-06 .nav-container .nav-right-content ul li a {
+        font-size: 16px;
+        padding: 12px 30px;
+    }
+    .single-counterup-02.style_02 {
+        padding: 23px 20px 15px;
+        min-height: 200px;
+        min-width: 200px;
+    }
+    .single-counterup-02.style_02 .content .count-wrap {
+        font-size: 36px;
+        line-height: 32px;
+    }
+}
+
+
+/* Tablet Layout: 768px. */
+
+@media only screen and (max-width: 991px) {
+    .navbar-search {
+        display: none;
+    }
+    section.category-area.padding-top-120.padding-bottom-125 {
+        padding-top: 80px;
+        padding-bottom: 60px;
+    }
+    section.featured-area.section-bg-2.padding-top-90.padding-bottom-120 {
+        padding-top: 40px;
+        padding-bottom: 60px;
+    }
+    section.success-area.padding-top-140.padding-bottom-140 {
+        padding-top: 80px;
+        padding-bottom: 60px;
+    }
+    section.about-area.section-bg-2.padding-top-120.padding-bottom-90 {
+        padding-top: 60px;
+        padding-bottom: 60px;
+    }
+    section.events-area-two.padding-top-140.padding-bottom-140 {
+        padding-top: 80px;
+        padding-bottom: 50px;
+    }
+    section.recent-area.section-bg-2.padding-top-90.padding-bottom-120 {
+        padding-top: 50px;
+        padding-bottom: 60px;
+    }
+    section.blog-area-two.padding-top-140.padding-bottom-120 {
+        padding-top: 80px;
+        padding-bottom: 80px;
+    }
+    section.featured-area-three.padding-top-90.padding-bottom-140 {
+        padding-top: 50px;
+        padding-bottom: 80px;
+    }
+    section.category-area.section-bg-3.padding-top-90.padding-bottom-80 {
+        padding-top: 50px;
+        padding-bottom: 50px;
+    }
+    section.success-area-two.padding-top-140.padding-bottom-140 {
+        padding-top: 80px;
+        padding-bottom: 50px;
+    }
+    section.recent-area-two.padding-top-140.padding-bottom-170 {
+        padding-top: 80px;
+        padding-bottom: 90px;
+    }
+    section.events-area-two.position-relative.section-bg-3.padding-top-90.padding-bottom-120 {
+        padding-top: 50px;
+        padding-bottom: 40px;
+    }
+    section.blog-area-two.padding-top-140.padding-bottom-110 {
+        padding-top: 80px;
+        padding-bottom: 70px;
+    }
+    section.featured-area.padding-top-100.padding-bottom-75 {
+        padding-top: 50px;
+        padding-bottom: 50px;
+    }
+    section.category-area.padding-top-25.padding-bottom-35 {
+        padding-top: 0;
+        padding-bottom: 15px;
+    }
+    section.recent-area.padding-top-25.padding-bottom-45 {
+        padding-top: 20px;
+        padding-bottom: 20px;
+    }
+    section.success-area-two.padding-top-25.padding-bottom-45 {
+        padding-top: 20px;
+        padding-bottom: 20px;
+    }
+    section.about-area.padding-bottom-25.padding-top-75 {
+        padding-top: 10px;
+        padding-bottom: 20px;
+    }
+    section.events-area-two.padding-top-25.padding-bottom-90 {
+        padding-top: 20px;
+        padding-bottom: 40px;
+    }
+    .section-title.section-title-four span {
+        font-size: 18px;
+    }
+    .client-area-two.padding-bottom-115 {
+        padding-bottom: 80px;
+    }
+    .counterup-area.section-bg-3.position-relative.padding-bottom-90.padding-top-120 {
+        padding-top: 70px;
+        padding-bottom: 50px;
+    }
+    .navbar-area .nav-container .navbar-collapse .navbar-nav li.menu-item-has-children {
+        padding-right: 0;
+    }
+    .section-title .title {
+        font-size: 52px;
+        line-height: 62px;
+    }
+    .header-area .title {
+        font-size: 100px;
+        line-height: 110px;
+    }
+    .logo-wrapper .logo-pc {
+        display: none;
+    }
+    .navbar-area.nav-style-02.charity-nav-02 .nav-container .logo-wrapper .mobile-logo {
+        display: block;
+    }
+    .header-area {
+        padding: 290px 0 175px;
+    }
+    .header-area.style-01 {
+        padding: 295px 0 295px;
+    }
+    .header-area .inner-right-contents {
+        margin-left: unset;
+        margin-top: 30px;
+    }
+    .navbar-area.nav-style-02.charity-nav-02 .nav-container,
+    .navbar-area.nav-style-02 {
+        background-color: transparent;
+    }
+    .navbar-area.nav-style-02 .nav-container .nav-right-content {
+        display: none;
+    }
+    .navbar-area.nav-style-02.charity-nav-03 .nav-container {
+        padding: 22px 0px;
+    }
+    .navbar-area.nav-style-02.charity-nav-02 .nav-container .logo-wrapper {
+        padding: 30px 30px;
+    }
+    .navbar-area.nav-style-02 .nav-container .logo-wrapper {
+        position: initial;
+        clip-path: initial;
+        border-left: 0;
+    }
+    .topbar-area .topbar-inner {
+        margin-left: 0;
+    }
+    .top-shapes img {
+        top: -28px;
+        min-height: 70px;
+    }
+    .section-shapes img:nth-child(1) {
+        top: -40px;
+        min-height: 75px;
+    }
+    .section-shapes img:nth-child(2) {
+        bottom: -40px;
+        min-height: 75px;
+    }
+    .left-contnet {
+        display: none;
+    }
+    .topbar-area .topbar-inner {
+        margin-left: 0;
+        justify-content: center;
+    }
+    .header-area.banner-padiing {
+        padding: 180px 0 110px;
+    }
+    .help-and-support-right .support-img .thumb {
+        width: 100%;
+        margin-top: 40px;
+    }
+    .help-and-support-right .support-img .thumb img {
+        width: 100%;
+    }
+    .help-and-support-right .donation-content {
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+    .volunteer-single-item::after {
+        left: 0;
+        transform: initial;
+        top: 0;
+        width: 100%;
+        height: 100%;
+    }
+    .volunteer-single-item {
+        padding: 40px 30px 70px;
+    }
+    .work-towards-area .left-content .inner-section-title .title {
+        font-size: 62px;
+        line-height: 72px;
+    }
+    .work-towards-area .right-content {
+        margin-top: 50px;
+        height: initial;
+    }
+    .volunteer-area .volunteer-title-content {
+        display: block;
+    }
+    .attend-events-area .attend-title-content .section-paragraph,
+    .volunteer-area .volunteer-title-content .section-paragraph {
+        width: 100%;
+        padding-right: 0;
+    }
+    .attend-events-area .attend-title-content,
+    .about-area .about-title-content {
+        display: block;
+    }
+    .attend-events-area .attend-title-content .section-title,
+    .about-area .about-title-content .section-title,
+    .volunteer-area .volunteer-title-content .section-title {
+        width: 100%;
+    }
+    .about-area .about-title-content .section-paragraph {
+        width: 100%;
+    }
+    .contact_info_list li.single-info-item-02 {
+        margin-left: 0;
+    }
+    .help-and-support-right .support-img-02.bg-image {
+        margin-bottom: 35px;
+    }
+    .header-bottom-area .support-single-item {
+        margin-top: 40px;
+    }
+    .support-single-img img {
+        width: 100%;
+    }
+    .volunteer-single-item-lists li {
+        width: calc(100% / 2);
+    }
+    .header-bottom-area .bg-img {
+        display: none;
+    }
+    .donation_wrapper {
+        margin-top: 40px;
+    }
+    .help-and-support-right .support-img::before {
+        display: none;
+    }
+    .volunteer-area.padding-top-160 {
+        padding-top: 120px;
+    }
+    .widget-area {
+        margin-top: 60px;
+    }
+    .widget_subscribe {
+        display: block;
+    }
+    .widget.footer-widget .subscribe-form {
+        margin-top: 30px;
+    }
+    .widget_subscribe .subscribe-form .form-group .form-control {
+        min-width: 100%;
+    }
+    .help-and-support-right .donation-content {
+        display: none;
+    }
+    .header-bottom-area.padding-bottom-115.padding-top-115 {
+        padding-bottom: 0;
+        padding-top: 0;
+    }
+    .about-content-area .bg-img {
+        display: none;
+    }
+    .about-content-area.padding-top-60.padding-bottom-60 {
+        padding-bottom: 0;
+        padding-top: 0;
+    }
+    .our-latest-area.padding-bottom-130.padding-top-120 {
+        padding-bottom: 90px;
+    }
+    .volunteer-area.padding-bottom-120 {
+        padding-bottom: 90px;
+    }
+    .breadcrumb-area .breadcrumb-inner {
+        padding: 278px 0 155px 0;
+    }
+    .header-area .header-inner-05 .title {
+        font-size: 60px;
+        line-height: 1.4;
+    }
+    .header-area.banner-padiing-02 {
+        padding: 200px 0 240px;
+    }
+    .rise-flex-contents .single-donate .title {
+        font-size: 26px;
+    }
+    .rise-flex-contents {
+        padding: 50px 20px 20px;
+    }
+    .rise-area .single-donate .form-control {
+        width: 140px;
+    }
+    .rise-flex-contents {
+        border-radius: 0;
+    }
+    .rise-flex-contents .single-donate .donate-btn {
+        font-size: 16px;
+    }
+    .single-events.style-02 {
+        margin-top: 40px;
+    }
+    .topbar-inner .right-contnet {
+        justify-content: center;
+    }
+    .topbar-inner.style-01.home-six-topbar {
+        display: block;
+        padding: 10px 20px;
+        text-align: center;
+    }
+    .topbar-inner.style-01.home-six-topbar .right-contnet .social-link {
+        padding-left: 0;
+    }
+    .topbar-area.style-02.home-page-six {
+        background: #1a191f;
+        position: relative;
+    }
+    .navbar-area.nav-style-02.charity-nav-06 {
+        top: 40px;
+    }
+    .navbar-area.nav-style-02.charity-nav-06 .nav-container {
+        padding: 21px 0 20px 0px;
+    }
+    .navbar-area.charity-nav-06 .nav-container .responsive-mobile-menu .navbar-toggler {
+        right: 0px;
+    }
+    .banner-mask-contents .banner-mask-image {
+        height: 100%;
+        width: 100%;
+    }
+    .header-inner-02.header-inner-04.header-inner-06 {
+        margin-top: 30px;
+    }
+    .header-area .header-inner-06 .title {
+        font-size: 45px;
+        line-height: 70px;
+    }
+    .header-area .header-inner-06 .progress-wrapper .progress-item .single-progressbar {
+        max-width: 250px;
+    }
+    .rise-area.style_02 .single-donate .form-control {
+        width: 100%;
+    }
+    .navbar-area.nav-style-02.charity-nav-06 {
+        padding: 0px 20px;
+    }
+    .header-slider-new {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+    .rise-area.style_02 {
+        margin: 0 20px;
+    }
+    .header-slider-new .inner-padding {
+        padding: 200px 20px 80px;
+    }
+    .section-title.section-title-five .title {
+        font-size: 30px;
+    }
+    div#mobile_btn a {
+        display: block;
+    }
+}
+
+
+/* Tablet Layout wide: 768px. */
+
+@media only screen and (max-width: 767px) {
+    .section-title .title {
+        font-size: 46px;
+        line-height: 56px;
+    }
+    .topbar-area.style-02 .topbar-inner {
+        margin-left: 0;
+        display: block;
+        text-align: center;
+    }
+    .topbar-inner.style-01 .right-contnet .social-link {
+        padding-left: 0;
+        padding-top: 7px;
+    }
+    .single-featured .featured-image img {
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+    }
+    .home-page-four {
+        padding: 0px 0px;
+    }
+    .single-events .events-flex-contents .events-date {
+        min-height: 120px;
+        min-width: 120px;
+    }
+    .single-events .events-flex-contents {
+        align-items: flex-start;
+        gap: 20px;
+    }
+    .recent-single .recent-thumb img {
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+    }
+    .single-blog .blog-thums img {
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+    }
+    .work-towards-area .left-content .inner-section-title .title {
+        font-size: 48px;
+        line-height: 58px;
+    }
+    .header-area .title {
+        font-size: 100px;
+        line-height: 110px;
+    }
+    .problem-single-item .content p {
+        max-width: initial;
+    }
+    .problem-area .problem-area-wrapper {
+        padding: 75px 60px 45px;
+    }
+    .volunteer-single-item-lists li {
+        width: calc(100% / 1);
+    }
+    .donation-img-thumb .thumb img,
+    .blog-img-thumb .thumb img {
+        width: 100%;
+    }
+    .donation-img-thumb .thumb-02,
+    .blog-img-thumb .thumb-02 {
+        margin-top: 30px;
+    }
+    .donation-img-thumb .thumb-02 img,
+    .blog-img-thumb .thumb-02 img {
+        width: 100%;
+    }
+    .comments-area .comment-form-wrap {
+        padding: 50px 60px 55px;
+    }
+    .volunteer-area.padding-bottom-120.padding-top-70 {
+        padding-top: 0;
+    }
+    .events-single-item .content .title {
+        font-size: 20px;
+        line-height: 30px;
+    }
+    .topbar-inner.style-01 .right-contnet .social-link ul li .info-bar-item {
+        display: none;
+    }
+    .topbar-inner.style-01 {
+        padding: 10px 0;
+    }
+    .navbar-area .nav-container .navbar-collapse .navbar-nav li.menu-item-has-children:before, .navbar-area .nav-container .navbar-collapse .navbar-nav li.menu-item-has-mega-menu:before {
+        right: 20px;
+    }
+    .navbar-area .nav-container .navbar-collapse .navbar-nav li.menu-item-has-children:before, .navbar-area .nav-container .navbar-collapse .navbar-nav li.menu-item-has-mega-menu:before {
+        right: 20px;
+        top: 28px;
+    }
+    
+    .xg-mega-menu-container {
+        padding: 0;
+        margin-top: 20px;
+    }
+    .navbar-area .nav-container .navbar-collapse .navbar-nav li.menu-item-has-mega-menu .xg_mega_menu_wrapper {
+        top: auto;
+        width: 100%;
+        background-color: transparent;
+        box-shadow: none;
+        padding: 0;
+        max-width: 100%;
+        z-index: -1;
+    }
+    .navbar-area .nav-container .navbar-collapse .navbar-nav li.menu-item-has-mega-menu:hover >  .xg_mega_menu_wrapper {
+        visibility: visible;
+        opacity: 1;
+        position: initial;
+         z-index:0;
+    }
+    .home-page-variant-03 .navbar-area.nav-style-02 .nav-container .navbar-collapse .navbar-nav {
+        margin-top: 20px;
+    }
+    #contact_us_form {
+        margin-bottom: 60px;
+    }
+    .rise-area .single-donate .form-control {
+        width: 100%;
+    }
+    .header-area .header-inner-06 .title {
+        font-size: 35px;
+        line-height: 50px;
+    }
+
+}
+
+
+/* medium tablet layout 599px */
+
+@media only screen and (max-width: 599px) {
+    .header-area .title {
+        font-size: 90px;
+        line-height: 100px;
+    }
+    .header-area p,
+    .header-area span {
+        font-size: 22px;
+        line-height: 32px;
+    }
+    .section-title .title {
+        font-size: 35px;
+        line-height: 52px;
+    }
+    .section-title.section-title-four .title img {
+        top: 5px;
+    }
+    .problem-area .bg-img {
+        display: none;
+    }
+    .problem-area.margin-top-120.padding-top-120.padding-bottom-120 {
+        margin-top: 0;
+        padding-bottom: 0;
+    }
+    .donation-details-item .content-wrapper {
+        display: block;
+    }
+    .donation-details-item .content-wrapper .progress-content {
+        width: 100%;
+    }
+    .donation-details-item .content-wrapper .btn-wrapper {
+        margin-top: 30px;
+    }
+    .single-counterup-01 .content .count-wrap {
+        font-size: 38px;
+        line-height: 48px;
+    }
+    .single-counterup-01 .icon {
+        font-size: 56px;
+        line-height: 66px;
+    }
+    .inner-section-title.padding-top-160.bg-image {
+        padding-top: 60px;
+    }
+    .header-area .header-inner-04 .title {
+        font-size: 50px;
+        line-height: 80px;
+        margin-bottom: 10px;
+    }
+    .header-area .header-inner-04 .title img {
+        top: 70px;
+    }
+    .about-content {
+        background-color: #f3f0ea;
+        padding: 60px 60px 60px 60px;
+    }
+    .breadcrumb-area .breadcrumb-inner {
+        padding: 248px 0 125px 0;
+    }
+    .breadcrumb-area .page-title {
+        font-size: 52px;
+        line-height: 62px;
+    }
+    .about-content {
+        background-color: #f3f0ea;
+        padding: 60px 40px;
+    }
+    .comments-area .comment-list .has-children {
+        padding-left: 20px;
+    }
+    .comments-area .comment-form-wrap {
+        padding: 50px 30px 55px;
+    }
+    .problem-area.margin-top-90.padding-top-120.padding-bottom-120 {
+        padding-top: 0;
+    }
+    .navbar-area .nav-container .navbar-collapse .navbar-nav li.menu-item-has-children:before, .navbar-area .nav-container .navbar-collapse .navbar-nav li.menu-item-has-mega-menu:before {
+        right: 20px;
+    }
+    .header-slider-new .inner-padding {
+        padding: 200px 5px 80px;
+    }
+    .section-title.section-title-five .title {
+        font-size: 27px;
+    }
+    .header-area .header-inner-06 .title {
+        font-size: 35px;
+        line-height: 50px;
+    }
+    .medical-document-btn .boxed-btn {
+        padding: 13px 10px;
+        font-size: 13px;
+    }
+}
+
+@media only screen and (max-width: 450px) {
+    .medical-document-btn .boxed-btn {
+        padding: 13px 10px;
+        margin-top: 20px;
+        font-size: 13px;
+    }
+    .author-data-tab .tabs li{
+        font-size: 14px;
+        padding: 10px 15px;
+    }
+    .header-area .title {
+        font-size: 75px;
+        line-height: 85px;
+    }
+    .section-title.section-title-four span {
+        font-size: 16px;
+    }
+    .work-towards-area .left-content .inner-section-title .title {
+        font-size: 42px;
+        line-height: 52px;
+    }
+    .section-title .title {
+        font-size: 36px;
+        line-height: 46px;
+    }
+    .section-title .title {
+        font-size: 30px;
+        line-height: 32px;
+    }
+    .section-title.section-title-four .title img {
+        top: -12px;
+    }
+    .recent-single .recent-contents .title {
+        font-size: 24px;
+    }
+    .single-events .events-flex-contents {
+        display: inline-block;
+    }
+    .single-events .events-flex-contents .events-date {
+        height: 120px;
+        width: 120px;
+        margin-bottom: 20px;
+    }
+    .events-single-item {
+        display: block;
+    }
+    .events-single-item .thumb {
+        max-width: 100%;
+    }
+    .events-single-item .thumb .bg-image {
+        min-height: 280px;
+    }
+    .work-towards-area .left-content .inner-section-title .title {
+        font-size: 36px;
+        line-height: 46px;
+    }
+    .counterup-area.bg-image.padding-bottom-105.padding-top-90 {
+        padding-bottom: 85px;
+    }
+    .breadcrumb-area .page-title {
+        font-size: 52px;
+        line-height: 62px;
+    }
+    .breadcrumb-area .page-title {
+        font-size: 42px;
+        line-height: 52px;
+    }
+    .blog-details-item .title,
+    .blog-classic-item-01 .content-wrapper .title {
+        font-size: 28px;
+        line-height: 38px;
+    }
+    .help-and-support-right .support-img::after {
+        display: none;
+    }
+    .events-single-item .content {
+        padding: 35px 20px 40px;
+    }
+    .problem-area .problem-area-wrapper {
+        padding: 75px 30px 45px;
+    }
+    .blog-details-footer {
+        display: block;
+    }
+    .blog-details-footer .left .tags {
+        margin-bottom: 20px;
+    }
+    .content-carousel.slick-slider .slick-list {
+        padding: 0 20px !important;
+    }
+    .navbar-area .nav-container .navbar-collapse .navbar-nav li.menu-item-has-children:before, .navbar-area .nav-container .navbar-collapse .navbar-nav li.menu-item-has-mega-menu:before {
+        right: 20px;
+    }
+    .user-dashboard-wrapper {
+        display: block;
+        position: relative;
+    }
+    .user-dashboard-wrapper > ul {
+        width: 260px;
+        position: absolute;
+        z-index: 99999;
+    }
+    .user-dashboard-wrapper .tab-content {
+        width: 100%;
+    }
+    .user-dashboard-wrapper > ul .mobile_nav {
+        top: -50px;
+    }
+    .user-dashboard-wrapper > ul.show .mobile_nav {
+        top: 0;
+    }
+    .header-style-01.header-variant-01 .topbar-inner .right-contnet .volunteer-right,
+    .header-style-01.header-variant-01 .info-items-02 li.volunteer,
+    .header-style-01.home-page-variant-02 .topbar-inner .right-contnet .volunteer-right ,
+    .header-style-01.home-page-variant-02 .info-items-02 li.volunteer {
+    display: block;
+
+        display: block;
+    }
+    .header-style-01.home-page-variant-02 .navbar-area .nav-container .responsive-mobile-menu .logo-wrapper{
+        background-color: transparent;
+        padding: 0 20px;
+        box-shadow: none;
+        min-height: 100px;
+    }
+    
+    .header-style-01.home-page-variant-02 .navbar-area .nav-container .responsive-mobile-menu {
+        display: flex;
+        justify-content: space-between;
+        background-color: var(--secondary-color);
+    }
+    .header-area .header-inner-05 .title {
+        font-size: 50px;
+        line-height: 1.4;
+    }
+    .rise-area .single-donate .form-control {
+        width: 150px;
+    }
+    .header-area .header-inner-06 .progress-wrapper .progress-item .single-progressbar {
+        max-width: 190px;
+    }
+    .navbar-area.nav-style-02.charity-nav-06 {
+        padding: 0px 0px;
+    }
+}
+
+
+/* mobile tablet layout 414px */
+
+@media only screen and (max-width: 414px) {
+    .topbar-area .topbar-inner .left-contnet {
+        display: none;
+    }
+    .topbar-inner .right-contnet {
+        justify-content: center;
+        width: 100%;
+    }
+    .navbar-area.nav-style-02.has-topbar-04 {
+        top: 45px;
+    }
+    .header-area .inner-right-contents .inner-content-all .donate-input .donate-lists li {
+        width: 60px;
+        font-size: 16px;
+    }
+
+    .header-area .header-inner-04 .title {
+        font-size: 40px;
+    }
+    .work-towards-area .left-content .inner-section-title .title {
+        font-size: 32px;
+        line-height: 42px;
+    }
+    .header-area .title {
+        font-size: 65px;
+        line-height: 75px;
+    }
+    .section-title .title {
+        font-size: 32px;
+        line-height: 42px;
+    }
+    .breadcrumb-area .breadcrumb-inner {
+        padding: 228px 0 105px 0;
+    }
+    .breadcrumb-area .page-title {
+        font-size: 38px;
+        line-height: 48px;
+    }
+    .widget.widget_event ul {
+        padding-left: 30px;
+        padding-right: 30px;
+    }
+    .widget.widget_map .contact_map-02 {
+        padding: 15px 30px 45px 30px;
+    }
+    .widget .widget-title.style-02,
+    .widget .widget-title.style-01 {
+        padding: 20px 30px;
+    }
+    .widget_tag_cloud .tagcloud {
+        padding: 0 30px;
+    }
+    .single-blog-grid-01 .content-wrapper,
+    .blog-details-item .content-wrapper,
+    .blog-classic-item-01 .content-wrapper {
+        padding-bottom: 10px;
+    }
+    .single-blog-grid-01 .content-wrapper .news-date {
+        position: absolute;
+        bottom: 170px;
+        left: 15px;
+    }
+    .blog-details-item .content-wrapper .news-date,
+    .blog-classic-item-01 .content-wrapper .news-date {
+        position: absolute;
+        top: 80px;
+        left: 15px;
+    }
+    .single-blog-grid-01 .content-wrapper .news-date .title,
+    .blog-classic-item-01 .content-wrapper .news-date .title,
+    .blog-details-item .content-wrapper .news-date .title {
+        padding: 2px 15px;
+    }
+    .header-slider-new {
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+    .btn-wrapper .boxed-btn {
+        padding: 13px 25px;
+    }
+    .header-inner-06 .btn-wrapper .boxed-btn {
+        padding: 13px 22px;
+        font-size: 13px;
+    }
+    .rise-area.style_02 {
+        margin: 0 0px;
+    }
+    .select2-container--default.select2-container--disabled .select2-selection--multiple {
+        max-width: 100%;
+        width: 100%;
+    }
+
+    .form-group.data {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .select2-container {
+        width: calc(100%) !important;
+        display: block;
+    }
+
+    .media-uploader-image-info {
+        display: none !important;
+    }
+
+    .media-uploader-image-list {
+        width: 100% !important;
+    }
+}
+
+
+/* mobile tablet layout 375px */
+
+@media only screen and (max-width: 384px) {
+    .header-area .title {
+        font-size: 55px;
+        line-height: 65px;
+    }
+    .comments-area .comment-list li .single-comment-wrap {
+        display: block;
+    }
+    .volunteer-single-item .content .title {
+        font-size: 24px;
+    }
+    .donation_wrapper {
+        padding: 55px 30px 60px;
+    }
+    .header-area p,
+    .header-area span {
+        font-size: 20px;
+    }
+    .navbar-area .nav-container .navbar-collapse .navbar-nav li.menu-item-has-children:before, .navbar-area .nav-container .navbar-collapse .navbar-nav li.menu-item-has-mega-menu:before {
+        right: 20px;
+    }
+    .header-area .inner-right-contents .inner-content-all .donate-input .donate-lists li {
+        width: 70px;
+        font-size: 14px;
+        height: 50px;
+    }
+    .category-slider .single-category .category-image img {
+        max-width: 120px;
+        height: 120px;
+    }
+    .header-area .inner-right-contents .inner-content-all {
+        background-color: rgba(6, 2, 39, 0.5);
+        padding: 20px 5px;
+    }
+    .header-area .header-inner-04 .title {
+        font-size: 40px;
+    }
+    .header-area .header-inner-05 .title {
+        font-size: 40px;
+    }
+    .section-title.section-title-five .title {
+        font-size: 22px;
+    }
+    .recent-single.style-02.style-02 .recent-contents .title {
+        font-size: 21px;
+    }
+    .single-events.style-03 .events-flex-contents .events-content .title {
+        font-size: 21px;
+        line-height: 1.4;
+    }
+    .rise-flex-contents .single-donate .nice-selects .nice-select {
+        width: 100%;
+    }
+}
+
+
+/* mobile tablet layout 360px */
+
+@media only screen and (max-width: 360px) {
+    .contact-inner-area .content-area-wrapper .content-area {
+        padding: 20px 15px;
+    }
+    .single-contact-item .icon {
+        line-height: 40px;
+        font-size: 30px;
+    }
+
+    .section-title.section-title-four span {
+        font-size: 15px;
+    }
+    .section-title .title {
+        font-size: 25px;
+        line-height: 42px;
+    }
+    .work-towards-area .left-content .inner-section-title .title {
+        font-size: 30px;
+        line-height: 40px;
+    }
+    .section-title .title {
+        font-size: 25px;
+        line-height: 40px;
+    }
+    .section-title.section-title-four .title img {
+        top: -5px;
+        width: 150px;
+    }
+    .header-area .inner-right-contents .inner-content-all .donate-input .donate-lists li {
+        width: 60px;
+    }
+    .single-counterup-01 .content .count-wrap {
+        font-size: 34px;
+        line-height: 44px;
+    }
+    .breadcrumb-area .page-title {
+        font-size: 36px;
+        line-height: 46px;
+    }
+    .blog-details-item .content-wrapper .news-date,
+    .blog-classic-item-01 .content-wrapper .news-date {
+        position: absolute;
+        top: 60px;
+    }
+}
+
+@media only screen and (max-width: 340px) {}
+
+
+/* mobile tablet layout 320px */
+
+@media only screen and (max-width: 330px) {}
