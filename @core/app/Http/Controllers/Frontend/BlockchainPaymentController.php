@@ -125,7 +125,8 @@ class BlockchainPaymentController extends Controller
         /* Raise the campaign total so progress bars match on-chain raisedAmount.
            Skipped while a donation is mismatch-flagged and held for review. */
         if (!$amountMismatch) {
-            $campaign->increment('raised', $total_amount);
+            /* raised counts the donation itself; the 2% platform fee is an extra donor charge */
+        $campaign->increment('raised', round((float) $request->amount, 2));
         }
 
         /* ---- Guard #3 aftermath: freeze + report on mismatch ---- */
