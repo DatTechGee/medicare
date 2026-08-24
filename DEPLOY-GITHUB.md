@@ -51,6 +51,13 @@ then:
 php artisan migrate --seed
 ```
 
+### Seeded money
+`--seed` pre-funds every demo account, so donations and payouts work instantly:
+- patient `rafiq_patient` -> 100 ETH (wallet verified)
+- donor `amina_donor` -> 50 ETH
+- every new donor/admin -> automatic 10 ETH faucet on first login
+- all 6 campaigns come with donation history and progress bars
+
 ## 6. Permissions + caches
 ```bash
 chmod -R 775 storage bootstrap/cache database
