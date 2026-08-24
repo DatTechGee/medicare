@@ -4,7 +4,6 @@
 @endsection
 @section('style')
 @parent
-    <x-media.css/>
     <link rel="stylesheet" href="{{asset('assets/backend/css/summernote-bs4.css')}}">
     <link rel="stylesheet" href="{{asset('assets/backend/css/select2.min.css')}}">
     <style>
@@ -50,16 +49,18 @@
         .ncf-connect-btn{width:100%;margin-top:auto;display:flex;align-items:center;justify-content:center;gap:10px;padding:13px;border:none;border-radius:12px;font-size:13px;font-weight:800;color:#fff;cursor:pointer;background:linear-gradient(135deg,#627EEA,#4A5FD6);transition:all .2s;margin-top:14px}
         .ncf-connect-btn:hover{filter:brightness(1.1);box-shadow:0 8px 24px rgba(98,126,234,.35);transform:translateY(-1px)}
 
-        /* uploads */
+        /* uploads — native file inputs */
         .ncf-uploads{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
         .ncf-upload{background:#101024;border:2px dashed #2E2E5A;border-radius:16px;padding:22px 18px;text-align:center;transition:border-color .2s,background .2s}
         .ncf-upload:hover{border-color:rgba(98,126,234,.55);background:#121230}
         .ncf-upload .up-icon{width:46px;height:46px;margin:0 auto 12px;border-radius:13px;background:linear-gradient(135deg,rgba(98,126,234,.15),rgba(0,212,170,.1));border:1px solid rgba(98,126,234,.3);display:flex;align-items:center;justify-content:center;font-size:17px;color:#8FA3FF}
         .ncf-upload h6{font-size:13px;font-weight:800;color:#E6E7F5;margin:0 0 4px}
         .ncf-upload p{font-size:11px;color:rgba(200,205,235,.38);margin:0 0 14px}
-        .ncf-upload .img-wrap img{max-width:100%;border-radius:10px;margin-bottom:10px}
-        .ncf-upload .media_upload_form_btn{display:inline-flex;align-items:center;gap:8px;background:rgba(98,126,234,.14);border:1px solid rgba(98,126,234,.4);color:#AAB6FF;font-size:12px;font-weight:700;border-radius:10px;padding:9px 18px;cursor:pointer;transition:all .18s}
-        .ncf-upload .media_upload_form_btn:hover{background:rgba(98,126,234,.26);color:#fff}
+        .ncf-upload .file-label{display:inline-flex;align-items:center;gap:8px;background:rgba(98,126,234,.14);border:1px solid rgba(98,126,234,.4);color:#AAB6FF;font-size:12px;font-weight:700;border-radius:10px;padding:9px 18px;cursor:pointer;transition:all .18s}
+        .ncf-upload .file-label:hover{background:rgba(98,126,234,.26);color:#fff}
+        .ncf-upload input[type=file]{display:none}
+        .file-name{display:block;margin-top:12px;font-size:11.5px;color:#00D4AA;font-weight:700;word-break:break-all}
+        .file-preview{max-width:100%;max-height:150px;border-radius:10px;margin-top:12px;display:none}
 
         /* submit */
         .ncf-submit-bar{display:flex;align-items:center;justify-content:space-between;gap:16px;background:#14142A;border:1px solid #26264A;border-radius:20px;padding:20px 26px;flex-wrap:wrap}
@@ -289,37 +290,29 @@
                     <div class="up-icon"><i class="fas fa-camera"></i></div>
                     <h6>{{__('Cover Image')}}</h6>
                     <p>{{__('Recommended 1920x1280')}}</p>
-                    <div class="media-upload-btn-wrapper">
-                        <div class="img-wrap"></div>
-                        <input type="hidden" name="image">
-                        <button type="button" class="media_upload_form_btn" data-btntitle="{{__('Select Image')}}" data-modaltitle="{{__('Upload Image')}}" data-toggle="modal" data-target="#media_upload_modal">
-                            <i class="fas fa-plus"></i> {{__('Choose Image')}}
-                        </button>
-                    </div>
+                    <label class="file-label"><i class="fas fa-folder-open"></i> {{__('Choose File')}}
+                        <input type="file" name="cover_image" accept="image/*" onchange="previewFile(this)">
+                    </label>
+                    <span class="file-name"></span>
+                    <img class="file-preview" alt="">
                 </div>
                 <div class="ncf-upload">
                     <div class="up-icon"><i class="fas fa-layer-group"></i></div>
                     <h6>{{__('Image Gallery')}}</h6>
                     <p>{{__('Add more photos of the treatment')}}</p>
-                    <div class="media-upload-btn-wrapper">
-                        <div class="img-wrap"></div>
-                        <input type="hidden" name="image_gallery">
-                        <button type="button" class="media_upload_form_btn" data-mulitple="true" data-btntitle="{{__('Select Image')}}" data-modaltitle="{{__('Upload Image')}}" data-toggle="modal" data-target="#media_upload_modal">
-                            <i class="fas fa-plus"></i> {{__('Add Photos')}}
-                        </button>
-                    </div>
+                    <label class="file-label"><i class="fas fa-folder-open"></i> {{__('Choose Files')}}
+                        <input type="file" name="gallery_images[]" accept="image/*" multiple onchange="previewFiles(this)">
+                    </label>
+                    <span class="file-name"></span>
                 </div>
                 <div class="ncf-upload">
                     <div class="up-icon" style="background:linear-gradient(135deg,rgba(0,212,170,.14),rgba(0,212,170,.06));border-color:rgba(0,212,170,.3);color:#00D4AA"><i class="fas fa-file-medical"></i></div>
                     <h6>{{__('Medical Documents')}}</h6>
-                    <p>{{__('Reports & proofs Ã¢â‚¬â€ verified privately by admin')}}</p>
-                    <div class="media-upload-btn-wrapper">
-                        <div class="img-wrap"></div>
-                        <input type="hidden" name="medical_document">
-                        <button type="button" class="media_upload_form_btn" data-mulitple="true" data-btntitle="{{__('Select Image')}}" data-modaltitle="{{__('Upload Image')}}" data-toggle="modal" data-target="#media_upload_modal">
-                            <i class="fas fa-plus"></i> {{__('Upload Documents')}}
-                        </button>
-                    </div>
+                    <p>{{__('Reports & proofs — verified privately by admin (images or PDF)')}}</p>
+                    <label class="file-label" style="border-color:rgba(0,212,170,.4);color:#7EEFDB"><i class="fas fa-folder-open"></i> {{__('Choose Files')}}
+                        <input type="file" name="document_files[]" accept="image/*,.pdf,.doc,.docx" multiple onchange="previewFiles(this)">
+                    </label>
+                    <span class="file-name"></span>
                 </div>
             </div>
         </div>
@@ -366,9 +359,30 @@
             });
             update();
         })();
+        function previewFile(input){
+            var wrap = input.closest('.ncf-upload');
+            var name = wrap.querySelector('.file-name');
+            var img  = wrap.querySelector('.file-preview');
+            if (input.files && input.files[0]){
+                name.textContent = input.files[0].name;
+                if (img){
+                    var r = new FileReader();
+                    r.onload = function(e){ img.src = e.target.result; img.style.display = 'inline-block'; };
+                    if (input.files[0].type.indexOf('image') === 0){ r.readAsDataURL(input.files[0]); }
+                    else { img.style.display = 'none'; }
+                }
+            }
+        }
+        function previewFiles(input){
+            var wrap = input.closest('.ncf-upload');
+            var name = wrap.querySelector('.file-name');
+            if (input.files && input.files.length){
+                var names = [];
+                for (var i = 0; i < input.files.length; i++){ names.push(input.files[i].name); }
+                name.textContent = names.join(', ');
+            }
+        }
     </script>
-
-    <x-media.markup :userUpload="true" :imageUploadRoute="route('user.upload.media.file')"></x-media.markup>
 </div>
 @endsection
 @section('scripts')
@@ -438,12 +452,6 @@
             });
         })(jQuery);
     </script>
-
-    <x-media.js
-        :deleteRoute="route('user.upload.media.file.delete')"
-        :imgAltChangeRoute="route('user.upload.media.file.alt.change')"
-        :allImageLoadRoute="route('user.upload.media.file.all')">
-    </x-media.js>
 
   <script>
       $(function (){

@@ -8,11 +8,13 @@ use App\Gift;
 use App\Helpers\FraudEngine;
 use App\Http\Controllers\Controller;
 use App\Notification;
+use App\MediaUpload;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\BasicMail;
 use Illuminate\Support\Str;
+use Intervention\Image\Facades\Image;
 
 class UserCampaignController extends Controller
 {
@@ -54,6 +56,9 @@ class UserCampaignController extends Controller
             'wallet_address' => ['nullable','string','regex:/^0x[a-fA-F0-9]{40}$/'],
             'patient_name' => 'nullable|string|max:191',
             'hospital_name' => 'nullable|string|max:191',
+            'cover_image' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:11000',
+            'gallery_images.*' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:11000',
+            'document_files.*' => 'nullable|file|mimes:jpg,jpeg,png,gif,webp,pdf,doc,docx|max:20480',
         ],[
             'title.required' => __('title is required'),
             'cause_content.required' => __('donation content is required'),
@@ -70,6 +75,36 @@ class UserCampaignController extends Controller
         $slug_check = Cause::where(['slug' => $slug])->count();
         $cause_slug = $slug_check >= 1 ? $slug.'-2' : $slug;
 
+        /* direct uploads: cover, gallery, medical documents */
+        $imageValue = $request->filled('image') ? $request->image : null;
+        if ($request->hasFile('cover_image')) {
+            $imageValue = $this->storeUserMedia($request->file('cover_image'));
+        }
+
+        $galleryIds = [];
+        if ($request->filled('image_gallery')) {
+            $galleryIds = array_filter(explode('|', (string) $request->image_gallery));
+        }
+        if ($request->hasFile('gallery_images')) {
+            foreach ($request->file('gallery_images') as $galleryFile) {
+                $savedId = $this->storeUserMedia($galleryFile);
+                if ($savedId) { $galleryIds[] = $savedId; }
+            }
+        }
+        $galleryValue = count($galleryIds) ? implode('|', $galleryIds) : null;
+
+        $docIds = [];
+        if ($request->filled('medical_document')) {
+            $docIds = array_filter(explode('|', (string) $request->medical_document));
+        }
+        if ($request->hasFile('document_files')) {
+            foreach ($request->file('document_files') as $docFile) {
+                $savedId = $this->storeUserMedia($docFile);
+                if ($savedId) { $docIds[] = $savedId; }
+            }
+        }
+        $documentValue = count($docIds) ? implode('|', $docIds) : null;
+
        $campaign_id =  Cause::create([
             'cause_update_id' => 0,
             'title' => $request->title,
@@ -77,10 +112,10 @@ class UserCampaignController extends Controller
             'cause_content' => $request->cause_content,
             'amount' => $request->amount,
             'status' => 'pending',
-            'image' => $request->image,
+            'image' => $imageValue,
             'deadline' => $request->deadline,
-            'image_gallery' => $request->image_gallery,
-            'medical_document' => $request->medical_document,
+            'image_gallery' => $galleryValue,
+            'medical_document' => $documentValue,
             'faq' => serialize($faq_item),
             'user_id' => Auth::guard('web')->user()->id,
             'created_by' => 'user',
@@ -192,6 +227,9 @@ class UserCampaignController extends Controller
             'wallet_address' => ['nullable','string','regex:/^0x[a-fA-F0-9]{40}$/'],
             'patient_name' => 'nullable|string|max:191',
             'hospital_name' => 'nullable|string|max:191',
+            'cover_image' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:11000',
+            'gallery_images.*' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:11000',
+            'document_files.*' => 'nullable|file|mimes:jpg,jpeg,png,gif,webp,pdf,doc,docx|max:20480',
         ],
             [
                 'title.required' => __('title is required'),
@@ -211,17 +249,41 @@ class UserCampaignController extends Controller
         $cause->gift()->detach();
         $cause->gift()->attach($request->gifts);
 
+        /* direct uploads: only replace a media field when new files are chosen */
+        $imageValue = $cause->image;
+        if ($request->hasFile('cover_image')) {
+            $imageValue = $this->storeUserMedia($request->file('cover_image'));
+        }
+
+        $galleryIds = array_filter(explode('|', (string) $cause->image_gallery));
+        if ($request->hasFile('gallery_images')) {
+            foreach ($request->file('gallery_images') as $galleryFile) {
+                $savedId = $this->storeUserMedia($galleryFile);
+                if ($savedId) { $galleryIds[] = $savedId; }
+            }
+        }
+        $galleryValue = count($galleryIds) ? implode('|', $galleryIds) : null;
+
+        $docIds = array_filter(explode('|', (string) $cause->medical_document));
+        if ($request->hasFile('document_files')) {
+            foreach ($request->file('document_files') as $docFile) {
+                $savedId = $this->storeUserMedia($docFile);
+                if ($savedId) { $docIds[] = $savedId; }
+            }
+        }
+        $documentValue = count($docIds) ? implode('|', $docIds) : null;
+
         $cause->update([
             'title' => $request->title,
             'slug' => $cause_slug,
             'cause_content' => $request->cause_content,
             'amount' => $request->amount,
-            'image' => $request->image,
+            'image' => $imageValue,
             'meta_tags' => $request->meta_tags,
             'meta_description' => $request->meta_description,
             'deadline' => $request->deadline,
-            'image_gallery' => $request->image_gallery,
-            'medical_document' => $request->medical_document,
+            'image_gallery' => $galleryValue,
+            'medical_document' => $documentValue,
             'faq' => serialize($faq_item),
             'meta_title' => $request->meta_title,
             'excerpt' => $request->excerpt,
@@ -250,6 +312,53 @@ class UserCampaignController extends Controller
     public function delete_campaign(Request $request,$id){
         Cause::where(['user_id' => auth()->guard('web')->user()->id,'id' => $id])->delete();
         return redirect()->back()->with(['msg' => __('Campaign Deleted...'),'type' => 'danger']);
+    }
+
+    /**
+     * Save an uploaded file (image or document) into the media library and
+     * return the MediaUpload id used by campaign image/gallery fields.
+     */
+    private function storeUserMedia($file)
+    {
+        try {
+            $originalName = $file->getClientOriginalName();
+            $sizeBytes = $file->getSize();
+            $extension = strtolower($file->getClientOriginalExtension());
+            $baseName = strtolower(Str::slug(pathinfo($originalName, PATHINFO_FILENAME)));
+            $storedName = $baseName . time() . '.' . $extension;
+            $folderPath = 'assets/uploads/media-uploader/';
+
+            $file->move($folderPath, $storedName);
+
+            $isImage = in_array($extension, ['jpg', 'jpeg', 'png', 'gif', 'webp']);
+            $dimensions = '-';
+
+            if ($isImage) {
+                try {
+                    $dimensions = implode(' x ', getimagesize($folderPath . $storedName) ?: []) ?: '-';
+                    if ($dimensions !== '-') {
+                        Image::make($folderPath . $storedName)->resize(150, 150)->save($folderPath . 'thumb-' . $storedName);
+                        Image::make($folderPath . $storedName)->resize(350, null, function ($constraint) { $constraint->aspectRatio(); })->save($folderPath . 'grid-' . $storedName);
+                        Image::make($folderPath . $storedName)->resize(740, null, function ($constraint) { $constraint->aspectRatio(); })->save($folderPath . 'large-' . $storedName);
+                    }
+                } catch (\Throwable $e) {
+                    /* thumbnails are optional — original file is already stored */
+                }
+            }
+
+            $media = MediaUpload::create([
+                'title' => $originalName,
+                'size' => formatBytes($sizeBytes),
+                'path' => $storedName,
+                'dimensions' => $dimensions,
+                'type' => 'web',
+                'user_id' => Auth::guard('web')->id(),
+            ]);
+
+            return $media->id ?? null;
+        } catch (\Throwable $e) {
+            return null;
+        }
     }
 
 }

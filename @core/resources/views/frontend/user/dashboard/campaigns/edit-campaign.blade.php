@@ -4,7 +4,6 @@
 @endsection
 @section('style')
 @parent
-    <x-media.css/>
     <link rel="stylesheet" href="{{asset('assets/backend/css/summernote-bs4.css')}}">
     <link rel="stylesheet" href="{{asset('assets/backend/css/bootstrap-tagsinput.css')}}">
     <link rel="stylesheet" href="{{asset('assets/backend/css/select2.min.css')}}">
@@ -136,52 +135,38 @@
                               >{{$donation->meta_description}}</textarea>
                 </div>
                 <div class="form-group">
-                    <label for="image">{{__('Og Meta Image')}}</label>
-                    <div class="media-upload-btn-wrapper">
-                        <div class="img-wrap">
-                            {!! render_attachment_preview_for_admin($donation->og_meta_image) !!}
-                        </div>
-                        <input type="hidden" name="og_meta_image" value="{{$donation->og_meta_image}}">
-                        <button type="button" class="btn btn-info media_upload_form_btn"
-                                data-btntitle="{{__('Select Donation Image')}}"
-                                data-modaltitle="{{__('Upload Donation Image')}}" data-toggle="modal"
-                                data-target="#media_upload_modal">
-                            {{__('Change Image')}}
-                        </button>
-                    </div>
-
+                    <label for="og_meta_image">{{__('Og Meta Image')}}</label>
+                    <div class="img-wrap">{!! render_attachment_preview_for_admin($donation->og_meta_image) !!}</div>
+                    <input type="hidden" name="og_meta_image" value="{{$donation->og_meta_image}}">
+                    <label class="btn btn-info" style="cursor:pointer;margin-top:8px">{{__('Choose File')}}
+                        <input type="file" name="og_meta_file" accept="image/*" style="display:none" onchange="this.previousElementSibling===null||0; this.closest('.form-group').querySelector('.new-file-name').textContent = this.files[0] ? this.files[0].name : '';">
+                    </label>
+                    <span class="new-file-name" style="color:#00b894;font-weight:700;font-size:12px;display:block"></span>
                 </div>
                 @endif
                 <div class="form-group">
-                    <label for="image">{{__('Image')}}</label>
-                    <div class="media-upload-btn-wrapper">
-                        <div class="img-wrap">
-                            {!! render_attachment_preview_for_admin($donation->image) !!}
-                        </div>
-                        <input type="hidden" name="image" value="{{$donation->image}}">
-                        <button type="button" class="btn btn-info media_upload_form_btn"
-                                data-btntitle="{{__('Select Donation Image')}}"
-                                data-modaltitle="{{__('Upload Donation Image')}}" data-toggle="modal"
-                                data-target="#media_upload_modal">
-                            {{__('Change Image')}}
-                        </button>
+                    <label for="image">{{__('Cover Image')}}</label>
+                    <div class="img-wrap">
+                        {!! render_attachment_preview_for_admin($donation->image) !!}
                     </div>
+                    <input type="hidden" name="image" value="{{$donation->image}}">
+                    <label class="btn btn-info" style="cursor:pointer;margin-top:8px">{{__('Choose New Image')}}
+                        <input type="file" name="cover_image" accept="image/*" style="display:none"
+                               onchange="var p=this.closest('.form-group'); if(this.files[0]){p.querySelector('.new-file-name').textContent=this.files[0].name; var pv=p.querySelector('.img-wrap img'); if(pv && this.files[0].type.indexOf('image')===0){pv.src=URL.createObjectURL(this.files[0]);}}">
+                    </label>
+                    <span class="new-file-name" style="color:#00b894;font-weight:700;font-size:12px;display:block"></span>
                     <small>{{__('Recommended image size 1920x1280')}}</small>
                 </div>
                 <div class="form-group">
-                    <label for="image">{{__('Image Gallery')}}</label>
-                    <div class="media-upload-btn-wrapper">
-                        <div class="img-wrap">
-                            {!! render_gallery_image_attachment_preview($donation->image_gallery) !!}
-                        </div>
-                        <input type="hidden" name="image_gallery" value="{{$donation->image_gallery}}">
-                        <button type="button" class="btn btn-info media_upload_form_btn" data-mulitple="true"
-                                data-btntitle="{{__('Select Image')}}" data-modaltitle="{{__('Upload Image')}}"
-                                data-toggle="modal" data-target="#media_upload_modal">
-                            {{__('Upload Images')}}
-                        </button>
-                    </div>
-                    <small>{{__('Recommended image size 1920x1280')}}</small>
+                    <label>{{__('Add More Images (gallery)')}}</label>
+                    {!! render_gallery_image_attachment_preview($donation->image_gallery) !!}
+                    <input type="hidden" name="image_gallery" value="{{$donation->image_gallery}}">
+                    <label class="btn btn-info" style="cursor:pointer;margin-top:8px">{{__('Choose Images')}}
+                        <input type="file" name="gallery_images[]" accept="image/*" multiple style="display:none"
+                               onchange="var n=[]; for(var i=0;i<this.files.length;i++)n.push(this.files[i].name); this.closest('.form-group').querySelector('.new-file-name').textContent=n.join(', ');">
+                    </label>
+                    <span class="new-file-name" style="color:#00b894;font-weight:700;font-size:12px;display:block"></span>
+                    <small>{{__('New photos are added to the gallery')}}</small>
                 </div>
                 <div class="form-group">
                     <label for="patient_name">{{__('Patient Name')}}</label>
@@ -194,17 +179,15 @@
                     <small>{{__('Where the treatment will take place')}}</small>
                 </div>
                 <div class="form-group">
-                    <label for="image">{{__('Medical Documents')}}</label>
-                    <div class="media-upload-btn-wrapper">
-                        <div class="img-wrap">
-                            {!! render_gallery_image_attachment_preview($donation->medical_document) !!}
-                        </div>
-                        <input type="hidden" name="medical_document" value="{{$donation->medical_document}}">
-                        <button type="button" class="btn btn-info media_upload_form_btn" data-mulitple="true" data-btntitle="{{__('Select Document')}}" data-modaltitle="{{__('Upload Document')}}" data-toggle="modal" data-target="#media_upload_modal">
-                            {{__('Upload Images')}}
-                        </button>
-                    </div>
-                    <small>{{__('Recommended image size 1920x1280')}}</small>
+                    <label>{{__('Medical Documents')}}</label>
+                    {!! render_gallery_image_attachment_preview($donation->medical_document) !!}
+                    <input type="hidden" name="medical_document" value="{{$donation->medical_document}}">
+                    <label class="btn btn-info" style="cursor:pointer;margin-top:8px">{{__('Choose Files')}}
+                        <input type="file" name="document_files[]" accept="image/*,.pdf,.doc,.docx" multiple style="display:none"
+                               onchange="var n=[]; for(var i=0;i<this.files.length;i++)n.push(this.files[i].name); this.closest('.form-group').querySelector('.new-file-name').textContent=n.join(', ');">
+                    </label>
+                    <span class="new-file-name" style="color:#00b894;font-weight:700;font-size:12px;display:block"></span>
+                    <small>{{__('Images or PDF reports — verified privately by admin')}}</small>
                 </div>
                 <div class="iconbox-repeater-wrapper">
                     @php
