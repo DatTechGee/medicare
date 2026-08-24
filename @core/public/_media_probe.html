@@ -1,0 +1,300 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><link rel="stylesheet" href="/assets/frontend/css/bootstrap.min.css"><link rel="stylesheet" href="/assets/backend/css/dropzone.css"><link rel="stylesheet" href="/assets/backend/css/media-uploader.css"><script src="/assets/frontend/js/jquery-3.4.1.min.js"></script></head><body><div id="jserr" style="background:#fee;color:#900;padding:8px;font-family:monospace"></div><script>window.onerror=function(msg,src,line,col){document.getElementById("jserr").innerHTML+="ERROR: "+msg+" @ "+line+":"+col+"<br>";};</script><button type="button" class="media_upload_form_btn" data-toggle="modal" data-target="#media_upload_modal">Choose</button><div class="modal fade" id="media_upload_modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Media Uploads</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="upload_media_image" data-toggle="tab" href="#upload_files" role="tab" aria-selected="true">Upload Files</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link"  data-toggle="tab" href="#media_library" role="tab" id="load_all_media_images" aria-controls="media_library" aria-selected="false">Media Library</a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="upload_files" role="tabpanel" >
+                                                <div class="dropzone-form-wrapper">
+                            <form action="http://127.0.0.1:8000/user-home/media-upload" method="post" id="placeholderfForm" class="dropzone" enctype="multipart/form-data">
+                                <input type="hidden" name="_token" value="EmLbFCEFVRN8cdO8mQ1ufgvrzO31mTMmsKtafQmv">                                                                    <input type="hidden" name="user_id" value="6">
+                                
+                            </form>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="media_library" role="tabpanel" >
+                        <div class="all-uploaded-images">
+
+                            <div class="main-content-area-wrap">
+                                <div class="image-preloader-wrapper">
+                                    <div class="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+                                </div>
+                                <ul class="media-uploader-image-list">
+                                </ul>
+                                <div class="media-uploader-image-info">
+                                    <div class="img-wrapper">
+                                        <img src="" alt="">
+                                    </div>
+                                    <div class="img-info">
+                                        <h5 class="img-title"></h5>
+                                        <ul class="img-meta" style="display: none">
+                                            <li class="date"></li>
+                                            <li class="dimension"></li>
+                                            <li class="size"></li>
+                                            <li class="image_id" style="display:none;"></li>
+                                            <li class="imgsrc"></li>
+                                            <li class="imgalt">
+                                               <div class="img-alt-wrap">
+                                                   <input type="text" name="img_alt_tag">
+                                                   <button class="btn btn-success img_alt_submit_btn"><i class="fas fa-check"></i></button>
+                                               </div>
+                                            </li>
+                                        </ul>
+                                        <a tabindex="0" class="btn btn-danger btn-xs mb-3 mr-1 media_library_image_delete_btn text-white" style="display: none">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary media_upload_modal_submit_btn" style="display: none">Set Image</button>
+            </div>
+        </div>
+    </div>
+</div><script src="/assets/frontend/js/bootstrap.bundle.min.js"></script><script src="/assets/backend/js/dropzone.js"></script><script>
+    (function ($) {
+        "use strict";
+
+        
+        var mainUploadBtn = '';
+        //after select image
+        $(document).on('click','.media_upload_modal_submit_btn',function (e) {
+            e.preventDefault();
+            var allData = $('.media-uploader-image-list li.selected');
+            if( typeof allData != 'undefined'){
+                mainUploadBtn.parent().find('.img-wrap').html('');
+                var imageId = '';
+                $.each(allData,function(index,value){
+                    var el = $(this).data();
+                    var separator = allData.length == index ? '' : '|';
+                    imageId += el.imgid + separator;
+                    mainUploadBtn.prev('input').attr('data-imgsrc',el.imgsrc);
+                    mainUploadBtn.parent().find('.img-wrap').append('<div class="attachment-preview"><div class="thumbnail"><div class="centered"><img src="'+el.imgsrc+'"></div></div></div>');
+                });
+                 mainUploadBtn.prev('input').val(imageId.substring(0,imageId.length -1));
+
+            }
+            $('#media_upload_modal').modal('hide');
+            $('.media_upload_form_btn').text("Change Image");
+        });
+
+
+        //delete image form media uploader
+
+       $(document).on('click','.media_library_image_delete_btn',function (e) {
+            e.preventDefault();
+            var el = $(this);
+            el.children('i').removeClass('ti-trash').addClass('fas fa-spinner fa-spin');
+            $.ajax({
+                type: "POST",
+                url: "http://127.0.0.1:8000/user-home/media-upload/delete",
+                data: {
+                    _token: "EmLbFCEFVRN8cdO8mQ1ufgvrzO31mTMmsKtafQmv",
+                    img_id : $('.image_id').text()
+                },
+                success: function (data) {
+                    $('.media-uploader-image-info a,.media-uploader-image-info .img-meta').hide();
+                    $('.media-uploader-image-list li.selected').remove();
+                    $('.media-uploader-image-info .img-wrapper img').attr('src','');
+                    $('.media-uploader-image-info .img-info .img-title').text('');
+                    el.children('i').addClass('ti-trash').removeClass('fas fa-spinner fa-spin');
+                },
+                error: function (error) {
+
+                }
+            });
+        });
+
+
+        $(document).on('click','.media_upload_form_btn',function (e) {
+            e.preventDefault();
+
+            var parent = $('#media_upload_modal');
+            var el = $(this);
+            var imageId = el.prev('input').val();
+            mainUploadBtn = el;
+
+            parent.find('.media_upload_modal_submit_btn').text(el.data('btntitle'));
+            parent.find('.modal-title').text(el.data('modaltitle'));
+
+            if(el.data('mulitple')){
+                parent.attr('data-mulitple','true')
+            }else{
+                parent.removeAttr('data-mulitple');
+            }
+
+            if(imageId =! ''){
+                $('#load_all_media_images').trigger('click');
+            }
+
+        });
+
+        $('body').on('click', '.media-uploader-image-list > li', function (e) {
+            e.preventDefault();
+            var el = $(this);
+            var allData = el.data();
+
+            if( typeof $('#media_upload_modal').attr('data-mulitple') == 'undefined'){
+                el.toggleClass('selected').siblings().removeClass('selected');
+            }else{
+                el.toggleClass('selected');
+            }
+
+            $('.media-uploader-image-info a,.media-uploader-image-info .img-meta,.delete_image_form').show();
+
+            var parent = $('.img-meta');
+            parent.children('.date').text(allData.date);
+            parent.children('.dimension').text(allData.dimension);
+            parent.children('.size').text(allData.size);
+            parent.children('.imgsrc').text(allData.imgsrc);
+            parent.children('.image_id').text(allData.imgid);
+            parent.find('input[name="img_alt_tag"]').val(allData.alt);
+            parent.parent().find('input[name="img_id"]').val(allData.imgid);
+
+            $('.img_alt_submit_btn').html('<i class="fas fa-check"></i>');
+            $('.img-info .img-title').text(allData.title)
+            $('.media-uploader-image-info .img-wrapper img').attr('src',allData.imgsrc);
+        });
+
+        Dropzone.options.placeholderfForm = {
+            dictDefaultMessage: "Drag or Select Your Image",
+            maxFiles: 50,
+            maxFilesize: 10, //MB
+            acceptedFiles: 'image/*',
+            success: function (file, response) {
+                if (file.previewElement) {
+                    return file.previewElement.classList.add("dz-success");
+                }
+                $('#load_all_media_images').trigger('click');
+                $('.media-uploader-image-list li:first-child').addClass('selected');
+            },
+            error: function (file, message) {
+                if (file.previewElement) {
+                    file.previewElement.classList.add("dz-error");
+                    if ((typeof message !== "String") && message.error) {
+                        message = message.error;
+                    }
+                    for (let node of file.previewElement.querySelectorAll("[data-dz-errormessage]")) {
+                        node.textContent = message.errors.file[0];
+                    }
+                }
+            }
+        };
+
+
+        $(document).on('click', '#upload_media_image', function (e) {
+            e.preventDefault();
+            $('.media_upload_modal_submit_btn').hide();
+        });
+
+
+        $(document).on('click', '#load_all_media_images', function (e) {
+            e.preventDefault();
+            loadAllImages();
+        });
+
+
+
+        $(document).on('click', '.img_alt_submit_btn', function (e) {
+            e.preventDefault();
+            //admin.upload.media.file.alt.change
+            var parent = $(this).parent().parent().parent();
+            var alt = $(this).prev('input').val();
+            var imgId = parent.find('.image_id').text();
+
+            $.ajax({
+                type: "POST",
+                url: "http://127.0.0.1:8000/user-home/media-upload/alt",
+                data: {
+                    _token: "EmLbFCEFVRN8cdO8mQ1ufgvrzO31mTMmsKtafQmv",
+                    imgid: parseInt(imgId),
+                    alt: alt
+                },
+                success: function (data) {
+                    $('.img_alt_submit_btn').html('<i class="fas fa-check-circle"></i>');
+                    $('.media-uploader-image-list li[data-imgid="'+imgId+'"]').data('alt',alt);
+                }
+            });
+        });
+
+        function loadAllImages() {
+            $.ajax({
+                type: "POST",
+                url: "http://127.0.0.1:8000/user-home/media-upload/all",
+                data: {
+                    _token: "EmLbFCEFVRN8cdO8mQ1ufgvrzO31mTMmsKtafQmv"
+                },
+                success: function (data) {
+                    $('.media-uploader-image-list').html('');
+                    $.each(data,function (index,value) {
+
+                        $('.media-uploader-image-list').append('<li data-date="'+value.upload_at+'" data-imgid="'+value.image_id+'" data-imgsrc="'+value.img_url+'" data-size="'+value.size+'" data-dimension="'+value.dimensions+'" data-title="'+value.title+'" data-alt="'+value.alt+'">\n' +
+                            '<div class="attachment-preview">\n' +
+                            '<div class="thumbnail">\n' +
+                            '<div class="centered">\n' +
+                            '<img src="'+value.img_url+'" alt="">\n' +
+                            '</div>\n' +
+                            '</div>\n' +
+                            '</div>\n' +
+                            '</li>');
+
+                    });
+                    hidePreloader();
+                    $('.media_upload_modal_submit_btn').show();
+                    selectOldImage();
+                },
+                error: function (error) {
+
+                }
+            });
+        }
+
+
+        /**
+         * hide preloader
+         * @since 2.2
+         * */
+        function hidePreloader() {
+            $('.image-preloader-wrapper').hide(300);
+        }
+
+        /**
+         * Select preveiously selected image
+         * @since 2.2
+         * */
+        function selectOldImage(){
+            var imageId = mainUploadBtn.prev('input').val();
+            var matches = imageId.match(/([|])/g);
+            if(matches != null){
+                var imgArr = imageId.split('|');
+                var filtered = imgArr.filter(function (el) {
+                    return el != "";
+                });
+                $.each(filtered,function(index,value){
+                    $('.media-uploader-image-list li[data-imgid="'+value+'"]').trigger('click');
+                });
+            }else{
+                $('.media-uploader-image-list li[data-imgid="'+imageId+'"]').trigger('click').siblings().removeClass('selected');
+            }
+
+        }
+    })(jQuery);
+</script><script>window.addEventListener("load",function(){var d=document.getElementById("placeholderfForm");var ok=d&&(d.classList.contains("dz-clickable")||d.querySelector(".dz-message"));document.getElementById("jserr").innerHTML+=(ok?"DROPZONE INITIALIZED OK":"DROPZONE NOT INITIALIZED");});</script></body></html>

@@ -1,21 +1,19 @@
-<IfModule mod_rewrite.c>
-    <IfModule mod_negotiation.c>
-        Options -MultiViews -Indexes
-    </IfModule>
+# ============================================================
+# MediFund - subfolder deployment entry point
+# Clone location example: ~/public_html/medifund/
+# All traffic is routed into the Laravel app: @core/public/
+# ============================================================
 
+<IfModule mod_rewrite.c>
     RewriteEngine On
 
-    # Handle Authorization Header
-    RewriteCond %{HTTP:Authorization} .
-    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
-
-    # Redirect Trailing Slashes If Not A Folder...
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteCond %{REQUEST_URI} (.+)/$
-    RewriteRule ^ %1 [L,R=301]
-
-    # Handle Front Controller...
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteRule ^ index.php [L]
+    # Pass every request into the Laravel public directory
+    RewriteRule ^(.*)$ @core/public/$1 [L]
 </IfModule>
+
+# Block sensitive files
+<FilesMatch "(^\.env|\.env\.|\.sqlite|\.sqlite-journal|\.log$|composer\.|package(-lock)?\.json$|webpack\.mix\.js$|phpunit\.xml$|artisan$)">
+    Require all denied
+</FilesMatch>
+
+Options -Indexes
