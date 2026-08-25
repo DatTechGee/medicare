@@ -127,18 +127,30 @@ php artisan serve                 # http://127.0.0.1:8000
 Login pages use a simple math captcha. Seeded balances: patient **100 ETH**, donor **50 ETH**;
 new donors/admins get a 10 ETH faucet automatically.
 
-## Changing the Wallet Address
+## Changing the Wallet Address (use your OWN wallet)
 
-There are three places, depending on what you want to change:
+**Which kind of wallet?**
+An **EVM / Ethereum-compatible wallet** — the same kind of address used by Ethereum,
+BSC, Polygon, etc. The recommended one is **MetaMask** (browser extension), but any
+wallet that gives you a standard `0x…` address works: Rabby, Coinbase Wallet,
+Trust Wallet, Brave Wallet. ❌ Bitcoin/other-chain addresses do **not** work.
+
+Your address looks like `0x` + 40 hex characters, e.g.
+`0x80354450F4c300F178de2Ab718AbA6D2818CE102`.
+To get yours: open MetaMask → click the address pill at the top → **Copy**.
+
+**Where to put it — 4 places, depending on what should change:**
 
 | What | Where | Notes |
 |------|-------|-------|
-| **Receiving wallet** (where donor money is sent / who receives payouts) | Admin panel → **Blockchain Settings → Receiving Wallet** (`site_receiving_wallet`) | Live change — feeds the MetaMask donation flow immediately |
-| **Payout wallet of seeded patients/campaigns** | `.env` → `MEDIFUND_RECEIVING_WALLET=0xYourAddress` **before** running `migrate --seed` | Seeder writes this into the patient user + all seeded campaigns |
-| **Which account gets the 50 test ETH from funding** | `set TARGET=0xYourAddress` before running the funding step (or edit default in `blockchain/scripts/fund-wallet.js`) | Default: `0x80354450F4c300F178de2Ab718AbA6D2818CE102` |
+| **1. Site receiving wallet** (where donor money is sent / escrow beneficiary) | Admin panel → **Blockchain Settings → Receiving Wallet** (`site_receiving_wallet`) | Live change — feeds the MetaMask donation flow immediately |
+| **2. Payout wallet of seeded patients/campaigns** | `.env` → `MEDIFUND_RECEIVING_WALLET=0xYourAddress` **before** running `migrate --seed` | Seeder writes this into the patient user + all seeded campaigns |
+| **3. A patient's personal payout wallet** | Log in as that patient → dashboard → **Wallet card → Connect MetaMask / Change Wallet** | Per-user; admin must verify it before payouts are approved |
+| **4. Which account gets the 50 test ETH from funding** | `set TARGET=0xYourAddress` before running the funding step (or edit default in `blockchain/scripts/fund-wallet.js`) | Default: `0x80354450F4c300F178de2Ab718AbA6D2818CE102` |
 
 After changing a seeded wallet, rerun `php artisan migrate --seed --force` (or update
-the user/campaign wallet in the admin panel) and reload the MetaMask extension.
+the user/campaign wallet in the admin panel), then reload the wallet extension and
+make sure the active account is the one you configured.
 
 ## Donation Flow
 
