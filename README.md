@@ -39,17 +39,33 @@ medicare/
 └── DEPLOY-GITHUB.md  Shared-hosting install from this repo
 ```
 
+## Install These on Your System FIRST
+
+Install in this order **before** cloning/running the project:
+
+| # | Software | Version | Why it's needed | Download |
+|---|----------|---------|-----------------|----------|
+| 1 | **Git** | latest | clone this repo, pull updates | https://git-scm.com/downloads |
+| 2 | **XAMPP** | with PHP **8.1+ (8.2 recommended)** | PHP engine for Laravel. Apache/MySQL are NOT needed — the app uses SQLite | https://www.apachefriends.org |
+| 3 | **Composer** | 2.x | installs Laravel PHP packages (`composer install`) | https://getcomposer.org/download/ |
+| 4 | **Node.js** | LTS **18 or newer** | runs the Hardhat blockchain node + contract scripts | https://nodejs.org |
+| 5 | **MetaMask** | browser extension | wallet used for test donations | https://metamask.io/download/ |
+
+After installing, verify everything works — open a new terminal and run:
+
+```bash
+git --version      # git version 2.x
+php -v             # PHP 8.1+ (if "not recognized": add C:\xampp\php to PATH)
+composer -V        # Composer 2.x
+node -v            # v18+ / v20+
+npm -v
+```
+
+> **Windows PATH tip:** if `php` is not recognized, add `C:\xampp\php` to your PATH
+> (Start → "Edit environment variables" → Path → New → `C:\xampp\php`), then reopen
+> the terminal. Alternatively call it directly: `C:\xampp\php\php.exe artisan serve`.
+
 ## Run on a New Device (full install)
-
-### What to download first
-
-| # | Tool | Why | Download |
-|---|------|-----|----------|
-| 1 | XAMPP (PHP 8.2+) | PHP engine (Apache/MySQL not needed — app uses SQLite) | apachefriends.org |
-| 2 | Composer | installs PHP packages | getcomposer.org |
-| 3 | Node.js LTS 18+ | runs the Hardhat blockchain node | nodejs.org |
-| 4 | Git | clone this repo | git-scm.com |
-| + | MetaMask extension | browser wallet for test payments | metamask.io |
 
 ### Install steps
 
