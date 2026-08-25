@@ -244,14 +244,10 @@
             });
         }
     </script>
-    <x-media.markup
-            :userUpload="true"
-            :imageUploadRoute="route('user.upload.media.file')">
-    </x-media.markup>
 @endsection
 
 @section('scripts')
-    <script src="{{asset('assets/backend/js/select2.min.js')}}"></script>s
+    <script src="{{asset('assets/backend/js/select2.min.js')}}"></script>
     <script>
         (function ($) {
             "use strict";
@@ -334,11 +330,6 @@
     </script>
     <script src="{{asset('assets/backend/js/summernote-bs4.js')}}"></script>
     <script src="{{asset('assets/backend/js/bootstrap-tagsinput.js')}}"></script>
-    <x-media.js
-            :deleteRoute="route('user.upload.media.file.delete')"
-            :imgAltChangeRoute="route('user.upload.media.file.alt.change')"
-            :allImageLoadRoute="route('user.upload.media.file.all')">
-    </x-media.js>
     <x-repeater/>
 
     <script>

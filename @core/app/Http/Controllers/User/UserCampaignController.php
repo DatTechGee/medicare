@@ -230,6 +230,7 @@ class UserCampaignController extends Controller
             'cover_image' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:11000',
             'gallery_images.*' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:11000',
             'document_files.*' => 'nullable|file|mimes:jpg,jpeg,png,gif,webp,pdf,doc,docx|max:20480',
+            'og_meta_file' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:11000',
         ],
             [
                 'title.required' => __('title is required'),
@@ -273,6 +274,11 @@ class UserCampaignController extends Controller
         }
         $documentValue = count($docIds) ? implode('|', $docIds) : null;
 
+        $ogImageValue = $request->filled('og_meta_image') ? $request->og_meta_image : $cause->og_meta_image;
+        if ($request->hasFile('og_meta_file')) {
+            $ogImageValue = $this->storeUserMedia($request->file('og_meta_file'));
+        }
+
         $cause->update([
             'title' => $request->title,
             'slug' => $cause_slug,
@@ -290,7 +296,7 @@ class UserCampaignController extends Controller
             'categories_id' => $request->categories_id,
             'og_meta_title' => $request->og_meta_title,
             'og_meta_description' => $request->og_meta_description,
-            'og_meta_image' => $request->og_meta_image,
+            'og_meta_image' => $ogImageValue,
             'gift_status' => $request->gift_status,
             'wallet_address' => strtolower($request->wallet_address ?? optional(Auth::guard('web')->user())->wallet_address),
             'patient_name' => $request->patient_name,
