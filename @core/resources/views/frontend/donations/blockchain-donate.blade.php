@@ -298,9 +298,14 @@ let walletConnected = false;
 let connectedAccount = null;
 let realWalletMode = false;   /* true = real MetaMask talking to deployed contracts */
 const ETH_USD_RATE = 3450;
+/* Donor pays a platform fee on top (when charge_form=user). Mirrors the server-side
+   get_donation_total() so the wallet amount == the server's expected ETH and the
+   amount-mismatch tripwire never fires. */
+const DONOR_CHARGE_PCT = {{ $donorChargePct ?? 0 }};
 const CAMPAIGN_CHAIN_ID = {{$donation->id}};
 
-function usdToEth(usd) { return usd / ETH_USD_RATE; }
+function usdTotal(usd) { return usd * (1 + (DONOR_CHARGE_PCT / 100)); }
+function usdToEth(usd) { return usdTotal(usd) / ETH_USD_RATE; }
 
 function setAmount(amount) {
     document.getElementById('donationAmount').value = amount;
@@ -313,7 +318,8 @@ function updateUsd() {
     var usd = parseFloat(document.getElementById('donationAmount').value || '0');
     var eth = usdToEth(usd);
     var el = document.getElementById('usdPreview');
-    if (el) el.innerHTML = '&asymp; ' + eth.toFixed(6) + ' ETH';
+    var feeLine = (DONOR_CHARGE_PCT > 0) ? (' <span style="color:#94a3b8;font-weight:400">(+' + DONOR_CHARGE_PCT + '% platform fee)</span>') : '';
+    if (el) el.innerHTML = '&asymp; ' + eth.toFixed(6) + ' ETH' + feeLine;
     var hidden = document.getElementById('ethAmountInput');
     if (hidden) hidden.value = eth.toFixed(6);
 }

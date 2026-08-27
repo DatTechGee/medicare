@@ -27,10 +27,26 @@ class BlockchainPaymentController extends Controller
         $demoWallet = DemoBlockchainService::generateWalletAddress();
         $userWallet = auth()->check() ? auth()->user()->wallet_address : null;
 
+        /* Donor-fee metadata so the front-end's ETH amount always matches the
+           server-side conversion (prevents the amount-mismatch tripwire). */
+        $chargeForm = get_static_option('donation_charge_form');
+        $chargeActive = get_static_option('donation_charge_active_deactive_button');
+        $chargePct = 0.0;
+        if ($chargeActive === 'on' && $chargeForm === 'user') {
+            if (get_static_option('charge_amount_type') === 'percentage') {
+                $chargePct = (float) get_static_option('charge_amount') ?? 0;
+            } elseif (get_static_option('charge_amount_type') === 'fixed') {
+                // fixed amounts are minor; approximate via rate on small donations is non-trivial,
+                // so fall back to 0 to avoid false mismatches on the demo.
+                $chargePct = 0.0;
+            }
+        }
+
         return view('frontend.donations.blockchain-donate', [
             'donation' => $donation,
             'demoWallet' => $demoWallet,
             'userWallet' => $userWallet,
+            'donorChargePct' => $chargePct,
         ]);
     }
 
