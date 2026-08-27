@@ -39,82 +39,141 @@ medicare/
 └── DEPLOY-GITHUB.md  Shared-hosting install from this repo
 ```
 
-## Install These on Your System FIRST
+## Step 1 — Install the Required Software
 
-Install in this order **before** cloning/running the project:
+Install these in order **before** cloning the repo. Nothing else is needed.
 
 | # | Software | Version | Why it's needed | Download |
 |---|----------|---------|-----------------|----------|
 | 1 | **Git** | latest | clone this repo, pull updates | https://git-scm.com/downloads |
-| 2 | **XAMPP** | with PHP **8.1+ (8.2 recommended)** | PHP engine for Laravel. Apache/MySQL are NOT needed — the app uses SQLite | https://www.apachefriends.org |
-| 3 | **Composer** | 2.x | installs Laravel PHP packages (`composer install`) | https://getcomposer.org/download/ |
-| 4 | **Node.js** | LTS **18 or newer** | runs the Hardhat blockchain node + contract scripts | https://nodejs.org |
-| 5 | **MetaMask** | browser extension | wallet used for test donations | https://metamask.io/download/ |
+| 2 | **XAMPP** | PHP **8.1+ (8.2 recommended)** | the PHP engine Laravel runs on. Apache/MySQL are NOT needed — the app uses SQLite | https://www.apachefriends.org |
+| 3 | **Composer** | 2.x | installs the Laravel PHP packages (`composer install`) | https://getcomposer.org/download/ |
+| 4 | **Node.js** | LTS **18 or newer** | runs the Hardhat blockchain node + the contract scripts | https://nodejs.org |
+| 5 | **MetaMask** | browser extension | the wallet used to make test donations | https://metamask.io/download/ |
 
-After installing, verify everything works — open a new terminal and run:
+When installing **XAMPP**, accept the default PHP version (8.2). On the *Select Components*
+screen you can uncheck Apache and MySQL — only PHP is used.
 
-```bash
-git --version      # git version 2.x
-php -v             # PHP 8.1+ (if "not recognized": add C:\xampp\php to PATH)
-composer -V        # Composer 2.x
-node -v            # v18+ / v20+
+### Verify each installation
+
+Open **one terminal** (Windows: press `Win + R`, type `cmd`, press Enter — or use PowerShell)
+and run each line. Every command should print a version, not "not recognized":
+
+```
+git --version
+php -v
+composer -V
+node -v
 npm -v
 ```
 
-> **Windows PATH tip:** if `php` is not recognized, add `C:\xampp\php` to your PATH
-> (Start → "Edit environment variables" → Path → New → `C:\xampp\php`), then reopen
-> the terminal. Alternatively call it directly: `C:\xampp\php\php.exe artisan serve`.
+> **Windows PATH tip:** if `php -v` says "not recognized", add `C:\xampp\php` to your PATH:
+> Start → *Edit the system environment variables* → *Environment Variables* → under *System
+> variables* select `Path` → *Edit* → *New* → paste `C:\xampp\php` → *OK* → reopen the terminal.
+> (Or just always type the full path: `C:\xampp\php\php.exe` below.)
 
-## Run on a New Device (full install)
+---
 
-### Install steps
+## Step 2 — Clone the Project
 
-```bash
+In that same terminal, run:
+
+```
 git clone https://github.com/DatTechGee/medicare.git
-cd medicare/@core
+cd medicare
+```
 
-# --- PHP side ---
+This downloads the whole project into a folder named `medicare`. From here on, **all commands
+must be run from inside `medicare`** (or the `@core`/`blockchain` subfolders as shown).
+
+---
+
+## Step 3 — Install the PHP Packages & Set Up the Database
+
+Stay in the terminal and run (one block at a time):
+
+```
+cd medicare\@core
 composer install
-copy .env.example .env            (Windows)   # cp on mac/linux
+```
+
+Create the environment file and generate the app's secret key:
+
+```
+copy .env.example .env
 php artisan key:generate
-# edit .env:  APP_ENV=local  APP_DEBUG=true  APP_URL=http://127.0.0.1:8000
-echo. > database/database.sqlite  (Windows)   # touch on mac/linux
-php artisan migrate --seed        # demo users, funded accounts, 6 campaigns
-
-# --- Chain side: just run the portable script ---
-cd ../blockchain
-npm install                       # first time only (redeploy.bat also does this)
 ```
 
-Then double-click **`redeploy.bat`** in the repo root (or run it from cmd). It:
+Open `.env` in a text editor and make sure these four lines read:
 
-1. starts the Hardhat node in its own window (**keep it open**)
-2. deploys all four contracts (writes fresh `blockchain/deployments.json`)
-3. registers the seeded campaigns on-chain
-4. funds your MetaMask wallet with 50 test ETH
-5. syncs contract addresses into the app DB + frontend bundle
+```
+APP_ENV=local
+APP_DEBUG=true
+APP_URL=http://127.0.0.1:8000
+DB_CONNECTION=sqlite
+```
+(leave `DB_DATABASE` empty as-is — the database file is created next)
 
-```bash
-# --- App server (second terminal) ---
-cd @core
-php artisan serve                 # http://127.0.0.1:8000
+Create the SQLite database file and load the demo data (users, funded accounts, 6 campaigns):
+
+```
+echo. > database\database.sqlite
+php artisan migrate --seed
 ```
 
-> Contracts must be redeployed on every new device — each Hardhat instance is a fresh
-> chain, so old addresses never carry over. `redeploy.bat` handles all of it.
-> If deploy fails, an old Hardhat window is still open — close it and rerun.
+---
 
-### MetaMask setup
+## Step 4 — Start the Blockchain & Deploy the Contracts
 
-1. Add network manually:
-   - Network name: `MediFund Local Network`
-   - RPC URL: `http://127.0.0.1:8545`
-   - Chain ID: `31337`
-   - Currency: `ETH`
-2. **Reload the MetaMask extension** before donating (clears its throttle counter).
-3. Donations then use the **real MetaMask popup spending Hardhat test ETH** ("fake"
-   money on a local chain — nothing of value is transacted). If no wallet is installed,
-   the page automatically falls back to a built-in simulator.
+You now need **two terminals**, because two separate servers must stay running.
+**Do not close either window** while you're using the site.
+
+### Terminal A — the blockchain node
+
+Open a new terminal and run:
+
+```
+cd medicare\blockchain
+npm install
+node scripts/deploy.js --network localhost
+```
+
+Wait for the script to print "Deployment Summary" with four contract addresses. Now start the
+node — **this terminal must keep running**, so leave it open:
+
+```
+npx hardhat node
+```
+
+Because each Hardhat instance is a fresh chain, the contracts must be wired up after the node
+boots. In a **third** terminal run:
+
+```
+cd medicare\blockchain
+npx hardhat run scripts/sync-campaigns.js --network localhost
+npx hardhat run scripts/fund-wallet.js --network localhost
+node scripts/post-deploy-sync.js
+```
+- `sync-campaigns.js`   → registers the seeded campaigns on-chain
+- `fund-wallet.js`      → tops up the receiving wallet with 50 test ETH
+- `post-deploy-sync.js` → copies the contract addresses into the app DB + frontend bundle
+
+### Terminal B — the app (website) server
+
+Open a new terminal and run:
+
+```
+cd medicare\@core
+php artisan serve
+```
+
+Your website is now live at **http://127.0.0.1:8000** — keep this terminal open too.
+
+> **Windows shortcut:** instead of Terminal A + the third terminal, double-click
+> **`redeploy.bat`** in the `medicare` folder. It runs `npm install`, starts the Hardhat
+> node in its own window, deploys the contracts, registers campaigns, funds the wallet and
+> syncs the addresses. After it finishes, still run `php artisan serve` in a second terminal
+> as shown above, and leave the Hardhat window it opened running.
 
 ### Demo Accounts (after seeding)
 
