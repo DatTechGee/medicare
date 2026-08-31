@@ -47,7 +47,7 @@ Install these in order **before** cloning the repo. Nothing else is needed.
 |---|----------|---------|-----------------|----------|
 | 1 | **Git** | latest | clone this repo, pull updates | https://git-scm.com/downloads |
 | 2 | **XAMPP** | PHP **8.1+ (8.2 recommended)** | the PHP engine Laravel runs on. Apache/MySQL are NOT needed — the app uses SQLite | https://www.apachefriends.org |
-| 3 | **Composer** | 2.x | installs the Laravel PHP packages (`composer install`) | https://getcomposer.org/download/ |
+| 3 | **Composer** | 2.x | **optional** — only needed if you rebuild the PHP packages (this repo ships pre-built `vendor/`, so you normally skip it) | https://getcomposer.org/download/ |
 | 4 | **Node.js** | LTS **18 or newer** | runs the Hardhat blockchain node + the contract scripts | https://nodejs.org |
 | 5 | **MetaMask** | browser extension | the wallet used to make test donations | https://metamask.io/download/ |
 
@@ -86,23 +86,40 @@ cd medicare
 This downloads the whole project into a folder named `medicare`. From here on, **all commands
 must be run from inside `medicare`** (or the `@core`/`blockchain` subfolders as shown).
 
+> **Important — clone, don't download the ZIP.** Use `git clone` as shown above. The project
+> ships a pre-built `@core\vendor\` folder inside the repo, so a plain **"Download ZIP"**
+> actually **works too** — but a ZIP has a `.git` folder issue-free copy that never needs a
+> GitHub token. Either way, you get `vendor` included if you download *after* this commit.
+> If your path shows a **`-main` suffix** (e.g. `medicare-main`), you got a ZIP, which is fine —
+> just make sure to use the latest download.
+
 ---
 
-## Step 3 — Install the PHP Packages & Set Up the Database
+## Step 3 — Set Up the Database & App Key
 
-Stay in the terminal and run (one block at a time):
+The PHP packages are **already included** in the repo as a pre-built `@core\vendor\` folder, so
+you normally do **not** need Composer at all.
 
+**Optional — only if you want to rebuild the packages from scratch:**
 ```
 cd medicare\@core
 composer install
 ```
+(If Composer asks for a GitHub token on the `Sharifur/paymentgateway` package, that's because
+that one dependency is a private repository. You can ignore it — the shipped `vendor\` already
+contains everything you need. **Do not run `composer update`** — it will fail and prompt for a
+token.)
 
-Create the environment file and generate the app's secret key:
+Generate the app's secret key (this also confirms your PHP setup works — it should print
+`Application key [base64:...] set successfully.`):
 
 ```
 copy .env.example .env
 php artisan key:generate
 ```
+
+> **PowerShell note:** the `copy` command above is written for the classic `cmd` terminal. If
+> you're using **PowerShell**, type `Copy-Item .env.example .env` instead — both do the same job.
 
 Open `.env` in a text editor and make sure these four lines read:
 
@@ -116,8 +133,15 @@ DB_CONNECTION=sqlite
 
 Create the SQLite database file and load the demo data (users, funded accounts, 6 campaigns):
 
+**Command prompt (cmd):**
 ```
 echo. > database\database.sqlite
+php artisan migrate --seed
+```
+
+**PowerShell** (the `echo.` above is cmd-only and **fails in PowerShell** — use `New-Item` instead):
+```
+New-Item database\database.sqlite -ItemType File
 php artisan migrate --seed
 ```
 
