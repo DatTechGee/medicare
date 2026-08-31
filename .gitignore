@@ -1,6 +1,5 @@
 # --- Laravel app (@core) ---
 @core/.env
-@core/vendor/
 @core/node_modules/
 @core/storage/logs/*
 @core/storage/framework/cache/*
