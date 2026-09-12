@@ -165,7 +165,7 @@ function get_static_option($key)
 function get_default_language()
 {
     $defaultLang = Language::where('default', 1)->first();
-    return $defaultLang->slug;
+    return optional($defaultLang)->slug ?? 'en';
 }
 function update_static_option($key, $value)
 {
@@ -358,8 +358,8 @@ function get_user_lang()
 function get_user_lang_direction()
 {
     $default = \App\Language::where('default', 1)->first();
-    $user_direction = \App\Language::where('slug', session()->get('lang'))->first();
-    return !empty(session()->get('lang')) ? $user_direction->direction : $default->direction;
+    $user_direction = !empty(session()->get('lang')) ? \App\Language::where('slug', session()->get('lang'))->first() : null;
+    return optional($user_direction ?? $default)->direction ?? 'ltr';
 }
 
 function filter_static_option_value(string $index, array $array = [])
@@ -2180,7 +2180,7 @@ function admin_default_lang(){
     return $default_lang->slug;
 }
 function front_default_lang(){
-    $default_lang= !empty(session()->get('lang')) ? session()->get('lang') : Language::where('default',1)->first()->slug;
+    $default_lang= !empty(session()->get('lang')) ? session()->get('lang') : optional(Language::where('default',1)->first())->slug ?? 'en';
     return $default_lang;
 }
 function get_default_language_direction(){

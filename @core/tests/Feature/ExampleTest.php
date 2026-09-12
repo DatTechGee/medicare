@@ -7,15 +7,18 @@ use Tests\TestCase;
 
 class ExampleTest extends TestCase
 {
-    /**
-     * A basic test example.
-     *
-     * @return void
-     */
+    use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->artisan('migrate');
+        $this->artisan('db:seed');
+    }
+
     public function testBasicTest()
     {
         $response = $this->get('/');
-
         $response->assertStatus(200);
     }
 }

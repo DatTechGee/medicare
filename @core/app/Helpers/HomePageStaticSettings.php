@@ -250,8 +250,12 @@ class HomePageStaticSettings
 
     public static function get_home_field($homepage_id){
         $new_self = new self();
-        $home_var = 'home_'.$homepage_id;
-        return $new_self->$home_var();    }
+        $home_var = 'home_'.($homepage_id ?? '01');
+        if (!method_exists($new_self, $home_var)) {
+            $home_var = 'home_01';
+        }
+        return $new_self->$home_var();
+    }
 }
 
 

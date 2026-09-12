@@ -20,7 +20,7 @@ class GlobalVariableMiddleware
 
     public function handle($request, Closure $next)
     {
-$lang = !empty(session()->get('lang')) ? session()->get('lang') : Language::where('default', 1)->first()->slug;
+$lang = !empty(session()->get('lang')) ? session()->get('lang') : optional(Language::where('default', 1)->first())->slug ?? 'en';
         //make a function to call all static option by home page
         $static_option_arr = [
             'language_select_option',

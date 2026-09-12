@@ -4,12 +4,19 @@ namespace Tests\Unit;
 
 use App\Cause;
 use App\Helpers\FraudEngine;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class FraudEngineTest extends TestCase
 {
-    use DatabaseTransactions;
+    use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->artisan('migrate');
+        $this->artisan('db:seed');
+    }
 
     /** @test */
     public function genuine_verified_campaign_scores_low()
@@ -55,14 +62,16 @@ class FraudEngineTest extends TestCase
         $method = new \ReflectionMethod(FraudEngine::class, 'checkWalletVerified');
         $method->setAccessible(true);
 
-        $withWallet = new Cause(['wallet_address' => '0x' . str_repeat('a', 40)]);
+        $withWallet = new Cause();
+        $withWallet->wallet_address = '0x' . str_repeat('a', 40);
         $withWallet->wallet_verified = 1;
         $this->assertTrue($method->invoke(null, $withWallet));
 
-        $without = new Cause([]);
+        $without = new Cause();
         $this->assertFalse($method->invoke(null, $without));
 
-        $unverified = new Cause(['wallet_address' => '0x' . str_repeat('b', 40)]);
+        $unverified = new Cause();
+        $unverified->wallet_address = '0x' . str_repeat('b', 40);
         $unverified->wallet_verified = 0;
         $this->assertFalse($method->invoke(null, $unverified));
     }
