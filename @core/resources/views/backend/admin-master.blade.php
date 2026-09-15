@@ -103,50 +103,63 @@ input[type=checkbox],input[type=radio]{accent-color:#4285f4}
         <a href="{{route("admin.home")}}" class="sl flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] text-d-400 {{request()->routeIs("admin.home")?"act":""}}">
             <i class="fas fa-th-large w-5 text-center text-sm"></i><span>Dashboard</span>
         </a>
-        <div class="pt-4 pb-1 px-3 text-[10px] font-bold uppercase tracking-widest text-d-500">Campaigns</div>
+<div class="pt-4 pb-1 px-3 text-[10px] font-bold uppercase tracking-widest text-d-500">Core Flow</div>
         <a href="#" onclick="this.nextElementSibling.classList.toggle('hidden');return false" class="sl flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] text-d-400">
             <i class="fas fa-file-medical w-5 text-center text-sm"></i><span>Campaigns</span>
-            @if($pending_cases_count > 0)<span class="ml-auto text-[10px] font-bold bg-[#4285f4] text-white px-2 py-0.5 rounded-full">{{$pending_cases_count}}</span>@endif
+            @if(($pending_cases_count ?? 0) > 0)<span class="ml-auto text-[10px] font-bold bg-[#4285f4] text-white px-2 py-0.5 rounded-full">{{$pending_cases_count}}</span>@endif
             <i class="fas fa-chevron-down ml-auto text-[10px] opacity-40"></i>
         </a>
         <div class="ml-5 border-l border-[#e8edf5] pl-3 space-y-0.5 {{request()->is("admin-home/donations*")?"":"hidden"}}">
-            <a href="{{route("admin.donations.all")}}" class="sl block px-3 py-2 rounded-lg text-xs text-d-400">All Campaigns</a>
+            <a href="{{route("admin.donations.all")}}" class="sl block px-3 py-2 rounded-lg text-xs text-d-400 {{request()->routeIs("admin.donations.all")?"act":""}}">All Campaigns</a>
             <a href="{{route("admin.donations.new")}}" class="sl block px-3 py-2 rounded-lg text-xs text-d-400">Create Campaign</a>
+            <a href="{{route("admin.donations.pending.all")}}" class="sl block px-3 py-2 rounded-lg text-xs text-d-400 {{request()->routeIs("admin.donations.pending.all")?"act":""}}">Pending Review</a>
+            <a href="{{route("admin.campaign.approvals")}}" class="sl block px-3 py-2 rounded-lg text-xs text-d-400 {{request()->routeIs("admin.campaign.approvals")?"act":""}}">Approvals Queue</a>
             <a href="{{route("admin.donations.category.all")}}" class="sl block px-3 py-2 rounded-lg text-xs text-d-400">Categories</a>
-            <a href="{{route("admin.donations.pending.all")}}" class="sl block px-3 py-2 rounded-lg text-xs text-d-400">Pending Review</a>
             <a href="{{route("admin.donations.payment.logs")}}" class="sl block px-3 py-2 rounded-lg text-xs text-d-400">Donation Logs</a>
         </div>
-        <div class="pt-4 pb-1 px-3 text-[10px] font-bold uppercase tracking-widest text-d-500">Blockchain & Security</div>
+        <a href="{{route("admin.verifications.all", ["type" => "hospital"])}}" class="sl flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] text-d-400 {{request()->get("type") === "hospital" ? "act" : ""}}">
+            <i class="fas fa-hospital w-5 text-center text-sm"></i><span>Hospital Verifications</span>
+        </a>
+        <a href="{{route("admin.payment.verify")}}" class="sl flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] text-d-400 {{request()->routeIs("admin.payment.verify")?"act":""}}">
+            <i class="fas fa-credit-card w-5 text-center text-sm"></i><span>Payment Verify</span>
+        </a>
+        @canany(["donation-withdraw-list"])
         <a href="#" onclick="this.nextElementSibling.classList.toggle('hidden');return false" class="sl flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] text-d-400">
-            <i class="fas fa-link w-5 text-center text-sm"></i><span>Blockchain</span>
+            <i class="fas fa-paper-plane w-5 text-center text-sm"></i><span>Send Payment</span>
+            @if(($pending_withdraw_count ?? 0) > 0)<span class="ml-auto text-[10px] font-bold bg-amber-500 text-white px-2 py-0.5 rounded-full">{{$pending_withdraw_count}}</span>@endif
+            <i class="fas fa-chevron-down ml-auto text-[10px] opacity-40"></i>
+        </a>
+        <div class="ml-5 border-l border-[#e8edf5] pl-3 space-y-0.5 {{request()->is("admin-home/donations/withdraw*") || request()->is("admin-home/donations/escrow*")?"":"hidden"}}">
+            <a href="{{route("admin.all.donation.withdraw.request")}}" class="sl block px-3 py-2 rounded-lg text-xs text-d-400 {{request()->is("admin-home/donations/withdraw*")?"act":""}}">Withdrawal Requests</a>
+            <a href="{{route("admin.donations.escrow.index")}}" class="sl block px-3 py-2 rounded-lg text-xs text-d-400 {{request()->is("admin-home/donations/escrow*")?"act":""}}">Escrow Disbursements</a>
+        </div>
+        @endcanany
+        <div class="pt-4 pb-1 px-3 text-[10px] font-bold uppercase tracking-widest text-d-500">Security</div>
+        <a href="#" onclick="this.nextElementSibling.classList.toggle('hidden');return false" class="sl flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] text-d-400 {{request()->routeIs("admin.fraud*")?"act":""}}">
+            <i class="fas fa-shield-alt w-5 text-center text-sm"></i><span>Fraud Detection</span>
+            <i class="fas fa-chevron-down ml-auto text-[10px] opacity-40"></i>
+        </a>
+        <div class="ml-5 border-l border-[#e8edf5] pl-3 space-y-0.5 {{request()->is("admin-home/fraud*")?"":"hidden"}}">
+            <a href="{{route("admin.fraud.dashboard")}}" class="sl block px-3 py-2 rounded-lg text-xs text-d-400 {{request()->routeIs("admin.fraud.dashboard")?"act":""}}">Dashboard</a>
+            <a href="{{route("admin.fraud.reports")}}" class="sl block px-3 py-2 rounded-lg text-xs text-d-400">All Reports</a>
+        </div>
+        <a href="#" onclick="this.nextElementSibling.classList.toggle('hidden');return false" class="sl flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] text-d-400">
+            <i class="fab fa-ethereum w-5 text-center text-sm"></i><span>Blockchain</span>
             <i class="fas fa-chevron-down ml-auto text-[10px] opacity-40"></i>
         </a>
         <div class="ml-5 border-l border-[#e8edf5] pl-3 space-y-0.5 {{request()->is("admin-home/blockchain*")?"":"hidden"}}">
             <a href="{{route("admin.blockchain.all")}}" class="sl block px-3 py-2 rounded-lg text-xs text-d-400">All Transactions</a>
             <a href="{{route("admin.blockchain.settings")}}" class="sl block px-3 py-2 rounded-lg text-xs text-d-400">Wallet Settings</a>
+            <a href="{{url('/blockchain/explorer')}}" target="_blank" class="sl block px-3 py-2 rounded-lg text-xs text-d-400">Explorer <i class="fas fa-external-link-alt ml-1 text-[9px]"></i></a>
         </div>
-        <a href="#" onclick="this.nextElementSibling.classList.toggle('hidden');return false" class="sl flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] text-d-400">
-            <i class="fas fa-shield-alt w-5 text-center text-sm"></i><span>Fraud Detection</span>
-            <i class="fas fa-chevron-down ml-auto text-[10px] opacity-40"></i>
-        </a>
-        <div class="ml-5 border-l border-[#e8edf5] pl-3 space-y-0.5 {{request()->is("admin-home/fraud*")?"":"hidden"}}">
-            <a href="{{route("admin.fraud.dashboard")}}" class="sl block px-3 py-2 rounded-lg text-xs text-d-400">Dashboard</a>
-            <a href="{{route("admin.fraud.reports")}}" class="sl block px-3 py-2 rounded-lg text-xs text-d-400">All Reports</a>
-        </div>
-        <a href="{{route("admin.patient.wallets")}}" class="sl flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] text-d-400 {{request()->is("admin-home/patient-wallets*")?"act":""}}">
-            <i class="fas fa-hand-holding-usd w-5 text-center text-sm"></i><span>Patient Wallets</span>
-        </a>
-        <a href="{{route("admin.verifications.all")}}" class="sl flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] text-d-400 {{request()->routeIs("admin.verifications*")?"act":""}}">
-            <i class="fas fa-check-double w-5 text-center text-sm"></i><span>Verifications</span>
-        </a>
         <div class="pt-4 pb-1 px-3 text-[10px] font-bold uppercase tracking-widest text-d-500">Administration</div>
         @canany(["user-list","user-create"])
         <a href="#" onclick="this.nextElementSibling.classList.toggle('hidden');return false" class="sl flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] text-d-400">
-            <i class="fas fa-users w-5 text-center text-sm"></i><span>Users</span>
+            <i class="fas fa-users w-5 text-center text-sm"></i><span>People</span>
             <i class="fas fa-chevron-down ml-auto text-[10px] opacity-40"></i>
         </a>
         <div class="ml-5 border-l border-[#e8edf5] pl-3 space-y-0.5 {{request()->is("admin-home/frontend*")?"":"hidden"}}">
-            @can("user-list")<a href="{{route("admin.all.frontend.user")}}" class="sl block px-3 py-2 rounded-lg text-xs text-d-400">All Users</a>@endcan
+            @can("user-list")<a href="{{route("admin.all.frontend.user")}}" class="sl block px-3 py-2 rounded-lg text-xs text-d-400">Patients & Donors</a>@endcan
             @can("user-create")<a href="{{route("admin.frontend.new.user")}}" class="sl block px-3 py-2 rounded-lg text-xs text-d-400">Add New</a>@endcan
         </div>
         @endcanany
@@ -161,17 +174,9 @@ input[type=checkbox],input[type=radio]{accent-color:#4285f4}
             <a href="{{route("admin.all.admin.role")}}" class="sl block px-3 py-2 rounded-lg text-xs text-d-400">Roles</a>
         </div>
         @endif
-        @canany(["donation-withdraw-list"])
-        <a href="#" onclick="this.nextElementSibling.classList.toggle('hidden');return false" class="sl flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] text-d-400">
-            <i class="fas fa-wallet w-5 text-center text-sm"></i><span>Withdrawals</span>
-            @if($pending_withdraw_count > 0)<span class="ml-auto text-[10px] font-bold bg-amber-500 text-white px-2 py-0.5 rounded-full">{{$pending_withdraw_count}}</span>@endif
-            <i class="fas fa-chevron-down ml-auto text-[10px] opacity-40"></i>
+        <a href="{{route("admin.audit.logs")}}" class="sl flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] text-d-400 {{request()->routeIs("admin.audit.logs")?"act":""}}">
+            <i class="fas fa-clipboard-list w-5 text-center text-sm"></i><span>Audit Logs</span>
         </a>
-        <div class="ml-5 border-l border-[#e8edf5] pl-3 space-y-0.5 {{request()->is("admin-home/donations/withdraw*")||request()->is("admin-home/donations/escrow*")?"":"hidden"}}">
-            <a href="{{route("admin.all.donation.withdraw.request")}}" class="sl block px-3 py-2 rounded-lg text-xs text-d-400 {{request()->is("admin-home/donations/withdraw*")?"act":""}}">All Requests</a>
-            <a href="{{route("admin.donations.escrow.index")}}" class="sl block px-3 py-2 rounded-lg text-xs text-d-400 {{request()->is("admin-home/donations/escrow*")?"act":""}}">Escrow Disbursements</a>
-        </div>
-        @endcanany
         <div class="pt-4 pb-1 px-3 text-[10px] font-bold uppercase tracking-widest text-d-500">Settings</div>
         <a href="{{route("admin.navbar.settings")}}" class="sl flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] text-d-400"><i class="fas fa-palette w-5 text-center text-sm"></i><span>Appearance</span></a>
         <a href="{{route("admin.general.site.identity")}}" class="sl flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] text-d-400"><i class="fas fa-cog w-5 text-center text-sm"></i><span>General</span></a>

@@ -73,6 +73,7 @@ class CausesController extends Controller
                     $colors = [
                         'pending' => 'warning',
                         'approved' => 'success',
+                        'verified' => 'success',
                         'rejected' => 'danger',
                         'under_review' => 'info',
                     ];
@@ -80,6 +81,7 @@ class CausesController extends Controller
                     $icons = [
                         'pending' => 'fas fa-clock',
                         'approved' => 'fas fa-check-circle',
+                        'verified' => 'fas fa-check-circle',
                         'rejected' => 'fas fa-times-circle',
                         'under_review' => 'fas fa-search',
                     ];
@@ -274,7 +276,17 @@ class CausesController extends Controller
         $donation = Cause::findOrFail($id);
         $all_category = CauseCategory::all();
         $all_gifts= Gift::where(['creator_id'=> Auth::guard('admin')->id(),'creator_type'=>'admin','status' => 'publish'])->get();
-        return view(self::BASE_PATH . 'edit-donations')->with(['donation' => $donation, 'all_category' => $all_category,'all_gifts'=>$all_gifts]);
+
+        /* ensure a verification checklist exists so pending campaigns are reviewable */
+        \App\Verification::ensureForCampaign($donation->id);
+        $verifications = \App\Verification::where('campaign_id', $donation->id)->orderBy('id')->get();
+
+        return view(self::BASE_PATH . 'edit-donations')->with([
+            'donation' => $donation,
+            'all_category' => $all_category,
+            'all_gifts' => $all_gifts,
+            'verifications' => $verifications,
+        ]);
     }
 
     public function verify_wallet(Request $request, $id)
@@ -749,6 +761,18 @@ class CausesController extends Controller
         $cause->status = 'publish';
         $cause->save();
 
+        /* ensure the verification checklist exists and mark it verified by approval */
+        \App\Verification::ensureForCampaign($cause->id);
+        \App\Verification::where('campaign_id', $cause->id)
+            ->where('status', 'pending')
+            ->update([
+                'status'      => 'verified',
+                'verified_by' => optional(Auth::guard('admin')->user())->name ?? 'admin',
+            ]);
+        if (Schema::hasColumn('causes', 'verification_status')) {
+            $cause->update(['verification_status' => 'approved']);
+        }
+
         \App\Helpers\AuditLogger::record('campaign_approve', 'Cause', $cause->id, ['status' => 'publish']);
 
         /* seal the medical document hash at approval time (tamper-evidence anchor) */
@@ -772,6 +796,59 @@ class CausesController extends Controller
             $msg .= ' '.__(',notification mail send');
         }
         return back()->with(['msg' => $msg, 'type' => 'success']);
+    }
+
+    /**
+     * Campaign Approvals — one-stop admin section listing every user
+     * campaign that is not yet live so it can be approved or flagged.
+     * Approving runs the full pipeline (publish + verify + fraud re-score).
+     */
+    public function approvals()
+    {
+        $campaigns = Cause::with(['user', 'verifications', 'fraud_reports'])
+            ->whereNotNull('user_id')
+            ->where(function ($q) {
+                $q->where('status', '!=', 'publish')
+                    ->orWhere('verification_status', '!=', 'approved')
+                    ->orWhereNull('verification_status');
+            })
+            ->orderBy('id', 'desc')
+            ->get();
+
+        foreach ($campaigns as $c) {
+            $c->verified_rows = $c->verifications->where('status', 'verified')->count();
+            $c->total_rows = $c->verifications->count();
+            $c->hospital_confirmed = $c->verifications
+                ->where('type', 'hospital')
+                ->where('status', 'verified')
+                ->where('verified_by', 'like', 'Hospital:%')
+                ->first();
+            $c->last_report = $c->fraud_reports->sortByDesc('id')->first();
+        }
+
+        return view('backend.donations.campaign-approvals', ['campaigns' => $campaigns]);
+    }
+
+    public function paymentVerify()
+    {
+        $totalCampaigns      = Cause::count();
+        $publishedCampaigns  = Cause::where('status', 'publish')->count();
+        $pendingCampaigns    = Cause::where('status', 'pending')->count();
+        $totalRaised         = (clone \App\CauseLogs::where('status', 'complete'))->sum('amount');
+        $totalDonations      = (clone \App\CauseLogs::where('status', 'complete'))->count();
+        $pendingDonations    = \App\CauseLogs::where('status', '!=', 'complete')->count();
+        $pendingWalletVerifications = \App\User::where('wallet_verified', 0)->whereNotNull('wallet_address')->count();
+        $verifiedWallets     = \App\User::where('wallet_verified', 1)->count();
+        $recentDonations     = \App\CauseLogs::with('cause', 'user')->where('status', 'complete')->orderByDesc('id')->take(10)->get();
+        $pendingWithdrawals  = \App\DonationWithdraw::where('payment_status', 'pending')->count();
+        $totalDisbursed      = \App\DonationWithdraw::where('payment_status', 'approved')->sum('withdraw_request_amount');
+
+        return view('backend.donations.payment-verify', compact(
+            'totalCampaigns', 'publishedCampaigns', 'pendingCampaigns',
+            'totalRaised', 'totalDonations', 'pendingDonations',
+            'pendingWalletVerifications', 'verifiedWallets',
+            'recentDonations', 'pendingWithdrawals', 'totalDisbursed'
+        ));
     }
 
     /**

@@ -161,4 +161,22 @@ class FrontendUserManageController extends Controller
         return redirect()->back()->with(['msg' => __('User Verified Successfully..!'), 'type' => 'success']);
     }
 
+    public function user_verify_reject($id)
+    {
+        $user = User::findOrFail($id);
+        $user->user_verify_status = 3;
+        $user->save();
+
+        return redirect()->back()->with(['msg' => __('User Verification Rejected. The user can resubmit documents.'), 'type' => 'danger']);
+    }
+
+    public function user_verify_reset($id)
+    {
+        $user = User::findOrFail($id);
+        $user->user_verify_status = 1;
+        $user->save();
+
+        return redirect()->back()->with(['msg' => __('User Verification Reopened and moved back to pending review.'), 'type' => 'warning']);
+    }
+
 }

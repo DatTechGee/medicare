@@ -592,7 +592,7 @@ body{background:#0B0E1A !important}
                                         <div><b>{{__('Receiving Wallet Verified')}}</b><small>{{__('Admin verified beneficiary wallet on-chain ownership')}} &bull; {{\Carbon\Carbon::parse($donation->wallet_verified_at)->diffForHumans()}}</small></div>
                                     </div>
                                     @endif
-                                    @if(($donation->verification_status ?? '') === 'approved')
+                                    @if(in_array($donation->verification_status ?? '', ['approved','verified'], true))
                                     <div class="tl-item">
                                         <span class="tl-dot" style="background:#00D4AA"></span>
                                         <div>

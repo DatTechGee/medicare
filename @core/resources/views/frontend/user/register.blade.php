@@ -51,6 +51,22 @@
                                     <div class="rc-title">{{__('Donor')}}</div>
                                     <div class="rc-desc">{{__('Support patients by donating via MetaMask — anonymously or openly')}}</div>
                                 </label>
+                                <label class="role-card" id="roleCardHospital">
+                                    <input type="radio" name="role" value="hospital">
+                                    <div class="rc-icon"><i class="fas fa-hospital"></i></div>
+                                    <div class="rc-title">{{__('Hospital')}}</div>
+                                    <div class="rc-desc">{{__('Verify the authenticity of patient claims that list your hospital')}}</div>
+                                </label>
+                            </div>
+                            <br>
+                            <div class="form-group" id="hospitalField" style="display:none;">
+                                <label style="font-weight:600;font-size:13px;margin-bottom:6px;display:block;">{{__('Your Registered Hospital')}} <span class="text-danger">*</span></label>
+                                <select class="form-control" name="hospital_name">
+                                    <option value="">{{__('Select your hospital from the national registry')}}</option>
+                                    @foreach(\App\Services\HospitalRegistryService::list() as $key => $label)
+                                        <option value="{{ $label }}" @if(old('hospital_name') == $label) selected @endif>{{ $label }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                             <br>
 
@@ -115,11 +131,13 @@
         });
 
         (function(){
-            var cards = {patient: document.getElementById('roleCardPatient'), donor: document.getElementById('roleCardDonor')};
+            var cards = {patient: document.getElementById('roleCardPatient'), donor: document.getElementById('roleCardDonor'), hospital: document.getElementById('roleCardHospital')};
+            var hospitalField = document.getElementById('hospitalField');
             Object.keys(cards).forEach(function(role){
                 cards[role].addEventListener('click', function(){
                     this.querySelector('input[type=radio]').checked = true;
                     Object.keys(cards).forEach(function(r){ cards[r].classList.toggle('selected', r === role); });
+                    if (hospitalField) { hospitalField.style.display = role === 'hospital' ? 'block' : 'none'; }
                 });
             });
         })();

@@ -76,4 +76,38 @@ class HospitalRegistryService
 
         return $name ?? '';
     }
+
+    public static function list(): array
+    {
+        $names = [];
+        foreach (self::REGISTRY as $name => $entry) {
+            $names[$name] = ucwords($name) . ' (' . $entry['reg_no'] . ')';
+        }
+        return $names;
+    }
+
+    public static function matches(?string $campaignHospital, ?string $hospitalName): bool
+    {
+        if (empty($campaignHospital) || empty($hospitalName)) {
+            return false;
+        }
+
+        $entry = self::verify($campaignHospital);
+        $userEntry = self::verify($hospitalName);
+
+        if ($entry['registered'] && $userEntry['registered'] && $entry['reg_no'] === $userEntry['reg_no']) {
+            return true;
+        }
+
+        $target = self::normalize($entry['registered'] ? $entry['matched_name'] : $campaignHospital);
+        $user = self::normalize($hospitalName);
+
+        if ($target === '' || $user === '') {
+            return false;
+        }
+
+        return $target === $user
+            || str_contains($target, $user)
+            || str_contains($user, $target);
+    }
 }

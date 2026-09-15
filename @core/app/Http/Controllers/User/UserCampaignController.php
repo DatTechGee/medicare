@@ -152,7 +152,9 @@ class UserCampaignController extends Controller
                 'fraud_score' => $fraudResult['score'] ?? 0,
             ]);
 
-          $campaign_id->gift()->attach($request->gifts);
+            \App\Verification::ensureForCampaign($campaign_id->id);
+
+          $campaign_id->gift()->attach($request->gifts ?? []);
         }
 
 

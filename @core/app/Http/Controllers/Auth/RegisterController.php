@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Admin;
 use App\Country;
 use App\Http\Controllers\Controller;
+use App\Services\HospitalRegistryService;
 use App\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
@@ -38,7 +39,8 @@ class RegisterController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'agree_terms' => ['required'],
-            'role' => ['nullable', 'string', 'in:patient,donor'],
+            'role' => ['nullable', 'string', 'in:patient,donor,hospital'],
+            'hospital_name' => ['nullable', 'string', 'max:255'],
         ],[
             'captcha_token.required' => __('google captcha is required'),
             'name.required' => __('name is required'),
@@ -65,6 +67,19 @@ class RegisterController extends Controller
 
     protected function create(array $data)
     {
+        $role = $data['role'] ?? 'donor';
+        $role = in_array($role, ['patient', 'donor', 'hospital'], true) ? $role : 'donor';
+
+        $hospitalName = null;
+        if ($role === 'hospital') {
+            $registry = HospitalRegistryService::verify($data['hospital_name'] ?? null);
+            if ($registry['registered']) {
+                $hospitalName = $registry['matched_name'] ?? ($data['hospital_name'] ?? null);
+            } else {
+                $hospitalName = $data['hospital_name'] ?? null;
+            }
+        }
+
         $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
@@ -74,8 +89,9 @@ class RegisterController extends Controller
             'password' => Hash::make($data['password']),
             'email_verified' => 1,
             'status' => 'active',
-            'role' => ($data['role'] ?? 'donor') === 'patient' ? 'patient' : 'donor',
-            'campaign_permission' => ($data['role'] ?? 'donor') === 'patient' ? 'on' : '',
+            'role' => $role,
+            'hospital_name' => $hospitalName,
+            'campaign_permission' => $role === 'patient' ? 'on' : '',
         ]);
 
         return $user;

@@ -266,6 +266,12 @@ Route::group(['middleware' =>['setlang:frontend','globalVariable','maintains_mod
         });
 
         Route::group(['namespace' => 'User'], function (){
+            Route::get('/hospital-verifications', 'HospitalDashboardController@index')->name('user.hospital.dashboard');
+            Route::post('/hospital-verifications/verify/{id}', 'HospitalDashboardController@verify')->name('user.hospital.verify');
+            Route::post('/hospital-verifications/reject/{id}', 'HospitalDashboardController@reject')->name('user.hospital.reject');
+        });
+
+        Route::group(['namespace' => 'User'], function (){
             Route::get('/all-campaign-gifts', 'CausesGiftController@all_donation_gift')->name('user.campaign.gift.all');
             Route::get('campaign-gifts-new', 'CausesGiftController@create_donation_gift')->name('user.campaign.gift.new');
             Route::post('campaign-gifts-store', 'CausesGiftController@store_donation_gift')->name('user.campaign.gift.store');

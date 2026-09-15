@@ -138,25 +138,33 @@ class FraudEngine
     {
         $registry = HospitalRegistryService::verify($campaign->hospital_name);
 
-        $rowVerified = Verification::where('campaign_id', $campaign->id)
+        $hospitalRow = Verification::where('campaign_id', $campaign->id)
             ->where('type', 'hospital')
             ->where('status', 'verified')
-            ->exists();
+            ->first();
 
-        if (!empty($campaign->hospital_name) && $registry['registered'] && $rowVerified) {
+        $hospitalConfirmed = $hospitalRow && $hospitalRow->verified_by && str_starts_with((string) $hospitalRow->verified_by, 'Hospital:');
+
+        if (!empty($campaign->hospital_name) && $registry['registered'] && $hospitalConfirmed && $hospitalRow) {
+            return [true, "Authenticity confirmed by the treating hospital ({$hospitalRow->verified_by}) and registered in the national registry ({$registry['reg_no']}, {$registry['tier']})"];
+        }
+        if (!empty($campaign->hospital_name) && $registry['registered'] && $hospitalRow) {
             return [true, "Registered in national registry ({$registry['reg_no']}, {$registry['tier']}) + admin verified"];
         }
-        if ($rowVerified) {
+        if (!empty($campaign->hospital_name) && $registry['registered'] && $hospitalConfirmed) {
+            return [true, "Authenticity confirmed by the treating hospital ({$hospitalRow->verified_by})"];
+        }
+        if ($hospitalRow) {
             return [true, 'Admin verified — but hospital NOT found in national registry'];
         }
         if (!empty($campaign->hospital_name) && $registry['registered']) {
-            return [true, "Found in national registry as {$registry['matched_name']} ({$registry['reg_no']}) — pending admin confirmation"];
+            return [true, "Found in national registry as {$registry['matched_name']} ({$registry['reg_no']}) — pending hospital confirmation"];
         }
         if (empty($campaign->hospital_name)) {
             return [false, 'No treating hospital declared'];
         }
 
-        return [false, "'{$campaign->hospital_name}' not found in national hospital registry and unverified by admin"];
+        return [false, "'{$campaign->hospital_name}' not found in national hospital registry and no hospital confirmation on record"];
     }
 
     private static function checkDocuments(Cause $campaign): array

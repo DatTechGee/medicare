@@ -8,13 +8,18 @@ class MediFundDemoSeeder extends Seeder
     public function run()
     {
         /* ---------- make re-runs idempotent ---------- */
-        \DB::statement('PRAGMA foreign_keys = OFF');
-        foreach (['cause_logs', 'causes', 'cause_categories', 'media_uploads'] as $t) {
-            \DB::table($t)->delete();
+        $fkOff = \DB::connection()->getDriverName() === 'sqlite' ? 'PRAGMA foreign_keys = OFF' : 'SET FOREIGN_KEY_CHECKS = 0';
+        $fkOn  = \DB::connection()->getDriverName() === 'sqlite' ? 'PRAGMA foreign_keys = ON'  : 'SET FOREIGN_KEY_CHECKS = 1';
+        \DB::statement($fkOff);
+        $resetTables = ['blockchain_transactions', 'escrows', 'milestones', 'wallets', 'fraud_reports', 'verifications', 'patient_profiles', 'cause_logs', 'causes', 'cause_categories', 'media_uploads'];
+        foreach ($resetTables as $t) {
+            if (\Illuminate\Support\Facades\Schema::hasTable($t)) {
+                \DB::table($t)->delete();
+            }
         }
         \DB::table('admins')->where('email', 'admin@medifund.test')->delete();
-        \DB::table('users')->whereIn('email', ['patient@medifund.test', 'donor@medifund.test'])->delete();
-        \DB::statement('PRAGMA foreign_keys = ON');
+        \DB::table('users')->whereIn('email', ['patient@medifund.test', 'donor@medifund.test', 'hospital@medifund.test'])->delete();
+        \DB::statement($fkOn);
 
         /* ---------- static options (site config) ---------- */
         $options = [
@@ -125,6 +130,17 @@ class MediFundDemoSeeder extends Seeder
             'created_at' => now()->subDays(120), 'updated_at' => now(),
         ]);
 
+        /* ---------- hospital (first-class verifier actor per Section 3.2.1) ---------- */
+        \DB::table('users')->insertGetId([
+            'name' => 'Square Hospital Admin', 'email' => 'hospital@medifund.test', 'username' => 'square_hospital',
+            'password' => Hash::make('password'), 'email_verified' => 1, 'status' => 'active',
+            'role' => 'hospital',
+            'hospital_name' => 'Square Hospital',
+            'wallet_address' => '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC',
+            'demo_eth_balance' => 0,
+            'created_at' => now()->subDays(90), 'updated_at' => now(),
+        ]);
+
         /* ---------- campaign images ---------- */
         $imageIds = [];
         for ($i = 1; $i <= 6; $i++) {
@@ -224,6 +240,17 @@ class MediFundDemoSeeder extends Seeder
                 'wallet' => env('MEDIFUND_RECEIVING_WALLET', '0x80354450F4c300F178de2Ab718AbA6D2818CE102'), 'user_id' => $donorId,
                 'img' => 6, 'cat' => 5,
             ],
+            [ // pending — forwarded to Square Hospital for authenticity confirmation (hospital demo)
+                'title' => 'Premature Baby NICU Care for Sultana Begum',
+                'slug' => 'premature-baby-nicu-care-for-sultana-begum',
+                'excerpt' => 'NICU care for a premature newborn at Square Hospital. The claim has been submitted and forwarded to the treating hospital to confirm authenticity before the fraud gate.',
+                'amount' => 7500, 'raised' => 0,
+                'fraud_score' => 25, 'verification_status' => 'pending', 'status' => 'pending',
+                'featured' => null, 'emmergency' => 'on',
+                'hospital' => 'Square Hospital', 'patient' => 'Sultana Begum',
+                'wallet' => env('MEDIFUND_RECEIVING_WALLET', '0x80354450F4c300F178de2Ab718AbA6D2818CE102'), 'user_id' => $patientId,
+                'img' => 1, 'cat' => 0,
+            ],
         ];
 
         foreach ($causes as $c) {
@@ -263,20 +290,53 @@ class MediFundDemoSeeder extends Seeder
             $verStatus = $c['verification_status'] === 'approved' ? 'verified'
                 : ($c['status'] === 'draft' && $c['fraud_score'] >= 50 ? 'rejected' : 'pending');
             foreach (['patient', 'hospital', 'document', 'amount'] as $vtype) {
+                $verifiedBy = null;
+                if ($verStatus === 'verified') {
+                    $verifiedBy = $vtype === 'hospital'
+                        ? 'Hospital: ' . ($c['hospital'] ?: 'Registered facility')
+                        : 'medifund_admin';
+                }
                 \DB::table('verifications')->insert([
                     'campaign_id' => $cid,
                     'type' => $vtype,
                     'status' => $verStatus,
-                    'verified_by' => $verStatus === 'verified' ? 1 : null,
+                    'verified_by' => $verifiedBy,
                     'notes' => $verStatus === 'verified'
-                        ? ucfirst($vtype).' checks passed (Algorithm 1 + admin review)'
+                        ? ucfirst($vtype).' checks passed (Algorithm 1 + '.($vtype === 'hospital' ? 'hospital confirmation' : 'admin review').')'
                         : ($verStatus === 'rejected'
                             ? ucfirst($vtype).' check failed — fraud score '.$c['fraud_score'].'/100'
-                            : ucfirst($vtype).' awaiting admin review'),
+                            : ucfirst($vtype).' awaiting review'),
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);
             }
+
+            /* fraud report so the Fraud Detection area + ML panel have data */
+            \DB::table('fraud_reports')->insert([
+                'campaign_id' => $cid,
+                'fraud_score' => $c['fraud_score'],
+                'risk_level' => $c['fraud_score'] <= 20 ? 'low' : ($c['fraud_score'] <= 50 ? 'medium' : 'high'),
+                'status' => $c['verification_status'] === 'approved' ? 'cleared'
+                    : ($c['status'] === 'draft' ? 'flagged' : 'pending'),
+                'check_results' => json_encode([
+                    'patient_verified' => $c['fraud_score'] <= 50,
+                    'hospital_verified' => (bool) ($c['hospital'] ?: false),
+                    'documents_verified' => $c['fraud_score'] <= 50,
+                    'no_duplicate' => true,
+                    'amount_normal' => $c['amount'] <= 50000,
+                ]),
+                'recommendation' => $c['fraud_score'] <= 20 ? 'AUTO_APPROVE'
+                    : ($c['fraud_score'] <= 50 ? 'ADMIN_REVIEW' : 'FLAG_FOR_REVIEW'),
+                'admin_notes' => $c['verification_status'] === 'approved' ? 'Cleared by MediFund admin.' : null,
+                'reviewed_by' => $c['verification_status'] === 'approved' ? $adminId : null,
+                'evidence' => json_encode([
+                    'patient_verified' => ['pass' => $c['fraud_score'] <= 50, 'points' => 0, 'detail' => 'Patient identity on file'],
+                    'hospital_verified' => ['pass' => (bool) ($c['hospital'] ?: false), 'points' => 0, 'detail' => $c['hospital'] ? 'Treating hospital listed on campaign' : 'No hospital declared'],
+                    'documents_verified' => ['pass' => $c['fraud_score'] <= 50, 'points' => 0, 'detail' => 'Supporting documents submitted'],
+                ]),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
 
             /* donation history so cards/progress bars look alive */
             if ($c['raised'] > 0 && $c['status'] === 'publish') {

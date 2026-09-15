@@ -82,7 +82,7 @@ body{background:#0B0E1A !important}
 
         {{-- platform trust strip: real numbers from the database + on-chain reads --}}
         @php
-            $trustApproved = ($all_donations->getCollection()->where('verification_status','approved')->count());
+            $trustApproved = ($all_donations->getCollection()->whereIn('verification_status',['approved','verified'])->count());
             $trustTotal = $all_donations->total();
             $trustRaised = $all_donations->getCollection()->sum('raised');
         @endphp

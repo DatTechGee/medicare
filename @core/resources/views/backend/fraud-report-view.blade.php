@@ -27,7 +27,50 @@
                 </div>
                 @endforeach
             </div>
+</div>
+        @if(!empty($ml))
+        <div class="bg-d-900 border border-[#e8edf5] rounded-2xl p-6">
+            <h3 class="text-base font-bold text-d-100 mb-1 flex items-center gap-2"><i class="fas fa-brain text-violet-400"></i>ML Model Prediction
+                <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-violet-500/10 text-violet-400 uppercase tracking-wide">{{$ml['model']['name']}} v{{$ml['model']['version']}}</span></h3>
+            <p class="text-[11px] text-d-500 mb-6">{{$ml['model']['architecture']}}</p>
+            <div class="flex items-end justify-between mb-6 gap-8">
+                <div class="flex-1">
+                    <div class="flex justify-between text-xs mb-2"><span class="text-d-500 font-semibold uppercase tracking-wide">Fraud Probability</span><span class="font-extrabold text-d-100">{{$ml['probability_pct']}}%</span></div>
+                    <div class="h-3 rounded-full bg-[#f1f5fa] overflow-hidden">
+                        @php $pc = $ml['probability'] * 100; $pcColor = $pc >= 50 ? ($pc >= 65 ? "#ef4444" : "#f59e0b") : "#22c55e"; @endphp
+                        <div class="h-full rounded-full transition-all" style="width:{{$pc}}%;background:{{$pcColor}};"></div>
+                    </div>
+                </div>
+                <div class="text-center shrink-0">
+                    <div class="text-4xl font-extrabold text-d-100">{{$ml['probability_pct']}}<span class="text-lg text-d-500">%</span></div>
+                    <div class="text-[10px] text-d-500 font-semibold uppercase mt-1">Predicted Fraud</div>
+                </div>
+            </div>
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <div class="p-4 rounded-xl bg-d-800 border border-[#e8edf5] text-center"><div class="text-[11px] text-d-500 font-semibold uppercase mb-2">Model Verdict</div>
+                    <span class="px-2 py-0.5 rounded-md text-[10px] font-bold {{ $ml['verdict']==='high' ? 'bg-red-500/10 text-red-400' : ($ml['verdict']==='medium' ? 'bg-amber-500/10 text-amber-400' : 'bg-green-500/10 text-green-400') }}">{{strtoupper($ml['verdict'])}} RISK</span></div>
+                <div class="p-4 rounded-xl bg-d-800 border border-[#e8edf5] text-center"><div class="text-[11px] text-d-500 font-semibold uppercase mb-2">Confidence</div><span class="text-lg font-extrabold text-d-100">{{$ml['confidence']}}%</span></div>
+            </div>
+            @if(!empty($ml['top_features']))
+            <h4 class="text-sm font-bold text-d-100 mb-3">Top Contributing Features</h4>
+            <div class="flex flex-wrap gap-2 mb-6">
+                @foreach($ml['top_features'] as $f)
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-red-500/5 border border-red-500/15 text-[11px] font-semibold text-d-200"><i class="fas fa-sort-amount-down text-red-400 text-[9px]"></i>{{$f['name']}} <span class="text-d-500">· {{$f['importance']}}%</span></span>
+                @endforeach
+            </div>
+            @endif
+            <h4 class="text-sm font-bold text-d-100 mb-3">Model Evaluation (held-out testnet set)</h4>
+            <div class="grid grid-cols-5 gap-2 mb-5">
+                @foreach(["precision"=>"Precision","recall"=>"Recall","f1"=>"F1","auc"=>"AUC","accuracy"=>"Accuracy"] as $k=>$l)
+                <div class="p-3 rounded-xl bg-d-800 border border-[#e8edf5] text-center"><div class="text-[10px] text-d-500 font-semibold uppercase mb-1">{{$l}}</div><div class="text-lg font-extrabold text-d-100">{{$ml['model']['metrics'][$k]}}</div></div>
+                @endforeach
+            </div>
+            <div class="flex items-center justify-between gap-2 flex-wrap">
+                <span class="text-[10px] text-d-500"><i class="fas fa-database mr-1"></i>{{$ml['model']['trained_rows']}} · {{$ml['model']['trained_on']}}</span>
+                <span class="text-[10px] text-amber-400/80 italic"><i class="fas fa-flask mr-1"></i>{{$ml['disclaimer']}}</span>
+            </div>
         </div>
+        @endif
         @if(!empty($verifications)&&count($verifications)>0)
         <div class="bg-d-900 border border-[#e8edf5] rounded-2xl p-6">
             <h4 class="text-sm font-bold text-d-100 mb-4">Verification Records</h4>

@@ -1,6 +1,13 @@
 @extends('frontend.frontend-page-master')
+@php $udUser = auth()->guard('web')->user(); $udRole = $udUser->isHospital() ? 'hospital' : ($udUser->isPatient() ? 'patient' : 'donor'); @endphp
 @section('page-title')
-    {{ auth()->guard('web')->user()->isPatient() ? __('Patient Dashboard') : __('Donor Dashboard') }}
+    @if($udRole === 'hospital')
+        {{ __('Hospital Dashboard') }}
+    @elseif($udRole === 'patient')
+        {{ __('Patient Dashboard') }}
+    @else
+        {{ __('Donor Dashboard') }}
+    @endif
 @endsection
 @section('style')
 <script src="https://cdn.tailwindcss.com"></script>
@@ -26,6 +33,10 @@ body{background:#080814}
 .ud-nav a:hover{color:#fff;background:rgba(98,126,234,.14)}
 .ud-nav a.ud-active{background:linear-gradient(135deg,#627EEA,#00D4AA);color:#fff;box-shadow:0 4px 20px rgba(0,212,170,.3)}
 .ud-nav .ud-user{background:rgba(0,212,170,.08);border:1px solid rgba(0,212,170,.25);color:#00D4AA;font-weight:700;cursor:default}
+.ud-nav .ud-role{display:inline-flex;align-items:center;font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;border-radius:99px;padding:2px 8px;margin-left:8px;vertical-align:middle}
+.ud-role-hospital{background:#627EEA22;color:#8fa3f5;border:1px solid #8fa3f599}
+.ud-role-patient{background:#00D4AA22;color:#00D4AA;border:1px solid #00D4AA88}
+.ud-role-donor{background:#FFB80022;color:#FFB800;border:1px solid #FFB80088}
 .ud-nav .ud-logout:hover{background:rgba(255,107,107,.12);color:#ff6b6b}
 .ud-mobile-toggle{display:none}
 @media(max-width:860px){
@@ -143,12 +154,16 @@ body{background:#080814}
             <div class="ud-shell">
                 <nav class="ud-nav" id="udNav">
                     <button type="button" class="ud-mobile-toggle ud-btn-ghost" onclick="document.getElementById('udNav').classList.toggle('ud-open')" style="padding:9px 15px;"><i class="fas fa-bars"></i> {{__('Menu')}}</button>
-                    <span class="ud-nav-item ud-user"><i class="fas fa-user-circle mr-1"></i>{{ optional(Auth::guard('web')->user())->name }}</span>
-                    <a href="{{route('user.home')}}" class="ud-link @if(request()->routeIs('user.home')) ud-active @endif"><i class="fas fa-home"></i>{{__('Dashboard')}}</a>
+                    <span class="ud-nav-item ud-user"><i class="fas fa-user-circle mr-1"></i>{{ optional(Auth::guard('web')->user())->name }}
+                        <span class="ud-role ud-role-{{$udRole}}">{{ $udRole === 'hospital' ? __('Hospital') : ($udRole === 'patient' ? __('Patient') : __('Donor')) }}</span></span>
+                    <a href="{{ $udRole === 'hospital' ? route('user.hospital.dashboard') : route('user.home') }}" class="ud-link @if(request()->routeIs('user.home') || request()->routeIs('user.hospital.dashboard')) ud-active @endif"><i class="fas fa-home"></i>{{__('Dashboard')}}</a>
                     @if(Auth::guard('web')->user()->campaign_permission == 'on')
                         <a href="{{route('user.campaign.all')}}" class="ud-link @if(request()->routeIs('user.campaign.*') || request()->routeIs('user.all.update.cause.page') || request()->routeIs('user.add.new.update.cause.page')) ud-active @endif"><i class="fas fa-file-medical"></i>{{__('My Campaigns')}}</a>
                     @endif
-                    @if(!empty(get_static_option('donations_module_status')))
+                    @if(Auth::guard('web')->user()->isHospital())
+                        <a href="{{route('user.hospital.dashboard')}}" class="ud-link @if(request()->routeIs('user.hospital.*')) ud-active @endif"><i class="fas fa-hospital"></i>{{__('Hospital Verifications')}}</a>
+                    @endif
+                    @if(!empty(get_static_option('donations_module_status')) && !Auth::guard('web')->user()->isHospital())
                         <a href="{{route('user.home.donations')}}" class="ud-link @if(request()->routeIs('user.home.donations')) ud-active @endif"><i class="fas fa-hand-holding-heart"></i>{{auth()->guard('web')->user()->isPatient() ? __('Received Donations') : __('My Donations')}}</a>
                     @endif
                     <a href="{{route('user.home.edit.profile')}}" class="ud-link @if(request()->routeIs('user.home.edit.profile')) ud-active @endif"><i class="fas fa-user-edit"></i>{{__('Edit Profile')}}</a>

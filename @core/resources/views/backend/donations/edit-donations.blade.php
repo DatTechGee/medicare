@@ -25,10 +25,124 @@
         @include('backend/partials/error')
 
         @php
+            $submitter = $donation->user;
+            $docIds = array_filter(explode('|', (string) $donation->medical_document));
+            $docs = \App\MediaUpload::whereIn('id', $docIds)->get();
+            $galCount = count(array_filter(explode('|', (string) $donation->image_gallery)));
+            $deadline = $donation->deadline;
+            $daysLeft = $deadline ? (int) \Carbon\Carbon::now()->startOfDay()->diffInDays($deadline, false) : null;
+        @endphp
+        <div class="mb-5 rounded-xl overflow-hidden" style="border:1px solid rgba(98,126,234,.25); background:linear-gradient(135deg, rgba(98,126,234,.06), rgba(24,24,27,.9));">
+            <div class="px-5 py-3 border-b flex items-center justify-between flex-wrap gap-2" style="border-color:rgba(98,126,234,.18);">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:rgba(98,126,234,.16);"><i class="fas fa-clipboard-check text-sm" style="color:#8FA3FF;"></i></div>
+                    <span class="text-sm font-bold text-d-100">Campaign Validation</span>
+                    <span class="text-[10px] font-bold px-2 py-1 rounded-full text-d-200" style="background:rgba(255,255,255,.06);border:1px solid rgba(42,42,74,.6);">
+                        <i class="fas fa-paper-plane text-[9px] mr-1"></i>{{ !empty($submitter) ? $submitter->name : __('Admin Created') }}
+                    </span>
+                </div>
+                <div class="flex flex-wrap items-center gap-2 text-[11px]">
+                    @if($donation->created_by === 'user' && $donation->status === 'pending')
+                        <form action="{{route('admin.donation.approve')}}" method="post" onsubmit="return confirm('Approve + publish this campaign? The fraud score will be refreshed and the document hash sealed.')">
+                            @csrf
+                            <input type="hidden" name="id" value="{{$donation->id}}">
+                            <button type="submit" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-[11px] font-bold text-white transition hover:opacity-90" style="background:linear-gradient(135deg,#16a34a,#22c55e);">
+                                <i class="fas fa-check-circle text-[10px]"></i>{{ __('Approve & Publish') }}
+                            </button>
+                        </form>
+                        <form action="{{ route('admin.donations.flag.fraud', $donation->id) }}" method="post" onsubmit="return confirm('REJECT this campaign as fraud? It will be blocked from donations and the owner notified.')">
+                            @csrf
+                            <button type="submit" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-[11px] font-bold text-white transition hover:opacity-90" style="background:linear-gradient(135deg,#dc2626,#ef4444);">
+                                <i class="fas fa-flag text-[10px]"></i>{{ __('Reject / Flag Fraud') }}
+                            </button>
+                        </form>
+                    @else
+                        <span class="px-2.5 py-1 rounded-lg font-semibold text-d-200" style="background:rgba(148,163,184,.12);"><i class="fas fa-check-circle text-[9px] mr-1"></i>{{ __('Review actions available in the lists below') }}</span>
+                    @endif
+                </div>
+            </div>
+            <div class="p-5 grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div>
+                    <div class="text-[10.5px] font-bold uppercase tracking-wider text-d-500 mb-2">Submission</div>
+                    <div class="space-y-1.5 text-xs">
+                        <div class="flex justify-between"><span class="text-d-500">Created</span><span class="font-semibold text-d-200">{{ optional($donation->created_at)->format('d M Y, g:i A') ?: '-' }}</span></div>
+                        <div class="flex justify-between"><span class="text-d-500">Type</span><span class="font-semibold text-d-200">{{ ucfirst($donation->created_by) }}</span></div>
+                        <div class="flex justify-between"><span class="text-d-500">Email</span><span class="font-semibold text-d-200">{{ optional($submitter)->email ?: '-' }}</span></div>
+                        <div class="flex justify-between"><span class="text-d-500">Category</span><span class="font-semibold text-d-200">{{ optional($donation->category)->title ?: '-' }}</span></div>
+                        <div class="flex justify-between"><span class="text-d-500">Gifts</span>
+                            <span class="font-semibold text-d-200">
+                                @php $giftNames = $donation->gift->pluck('title')->toArray(); @endphp
+                                {{ count($giftNames) ? implode(', ', $giftNames) : '-' }}
+                            </span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-d-500">Deadline</span>
+                            <span class="font-semibold text-d-200">
+                                {{ $donation->deadline ? $donation->deadline->format('d M Y') : '-' }}
+                                @if($daysLeft !== null)
+                                    <span class="inline-flex ml-1 px-1.5 py-0.5 rounded-md text-[9.5px] font-bold {{ $daysLeft >= 0 ? 'text-green-400' : 'text-red-400' }}" style="background:rgba({{ $daysLeft >= 0 ? '34,197,94' : '239,68,68' }},.12);">{{ $daysLeft >= 0 ? $daysLeft.'d left' : 'Overdue' }}</span>
+                                @endif
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="text-[10.5px] font-bold uppercase tracking-wider text-d-500 mb-2">Recipient & Wallet</div>
+                    <div class="space-y-1.5 text-xs">
+                        <div class="flex justify-between"><span class="text-d-500">Patient</span><span class="font-semibold text-d-200">{{ $donation->patient_name ?: '-' }}</span></div>
+                        <div class="flex justify-between"><span class="text-d-500">Hospital</span><span class="font-semibold text-d-200">{{ $donation->hospital_name ?: '-' }}</span></div>
+                        <div class="flex flex-col">
+                            <span class="text-d-500 mb-1">Wallet Address</span>
+                            <code class="font-mono text-[10.5px] break-all text-d-200" style="background:rgba(15,23,42,.55);border-radius:8px;padding:6px 8px;color:#7dd3fc;">{{ $donation->wallet_address ?: '-' }}</code>
+                            @if($donation->wallet_address)
+                                <button type="button" onclick="var t=document.createElement('textarea');t.value='{{ $donation->wallet_address }}';document.body.appendChild(t);t.select();document.execCommand('copy');t.remove();this.textContent='Copied!';" class="self-start mt-1.5 inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold transition" style="background:rgba(98,126,234,.12);border:1px solid rgba(98,126,234,.3);color:#8FA3FF;">
+                                    <i class="fas fa-copy text-[9px]"></i>Copy
+                                </button>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="text-[10.5px] font-bold uppercase tracking-wider text-d-500 mb-2">Medical Documents ({{ $docs->count() }})</div>
+                    <div class="space-y-1.5 max-h-[190px] overflow-y-auto pr-1">
+                        @forelse($docs as $doc)
+                            @php
+                                $relPath = 'assets/uploads/media-uploader/'.$doc->path;
+                                $exists = $doc->path && file_exists($relPath);
+                            @endphp
+                            <a href="{{ asset($relPath) }}" target="_blank" class="flex items-center gap-1.5 text-[11px] font-semibold rounded-lg px-2 py-1.5 transition" style="{{ $exists ? 'background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.2);color:#6ee7b7;' : 'background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25);color:#f87171;' }}">
+                                <i class="fas {{ $exists ? 'fa-file-medical' : 'fa-file-circle-xmark' }} text-[10px]"></i>
+                                <span class="truncate">{{ $doc->title ?: $doc->path }}</span>
+                                @if(!$exists)<span class="text-[9px] font-bold">MISSING</span>@endif
+                            </a>
+                        @empty
+                            <span class="text-d-500 text-[11px]">No medical documents attached</span>
+                        @endforelse
+                    </div>
+                </div>
+                <div>
+                    <div class="text-[10.5px] font-bold uppercase tracking-wider text-d-500 mb-2">Media</div>
+                    <div class="flex flex-col gap-2">
+                        @if($donation->image)
+                            <img src="{{ get_attachment_url_by_id((int) $donation->image) }}" class="rounded-lg border border-[#2A2A4A] object-cover" style="max-height:90px;width:100%;">
+                        @else
+                            <span class="text-d-500 text-[11px]">No cover image</span>
+                        @endif
+                        <div class="flex items-center gap-2 text-[11px]">
+                            <span class="inline-flex items-center gap-1 px-2 py-1 rounded-md font-semibold text-d-200" style="background:rgba(148,163,184,.1);"><i class="fas fa-images text-[9px]"></i>{{ $galCount }} gallery images</span>
+                            <a href="{{ route('frontend.donations.single', $donation->slug) }}" target="_blank" class="inline-flex items-center gap-1 px-2 py-1 rounded-md font-semibold text-[#4285f4] hover:text-[#2563eb]"><i class="fas fa-eye text-[9px]"></i>View live</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @php
             $frReport = \App\FraudReport::where('campaign_id',$donation->id)->orderByDesc('id')->first();
             $frScore = (int) ($donation->fraud_score ?? 0);
             $frColor = $frScore > 50 ? '#ef4444' : ($frScore > 20 ? '#f59e0b' : '#22c55e');
             $frLabel = $frScore > 50 ? 'HIGH RISK' : ($frScore > 20 ? 'MEDIUM RISK' : 'LOW RISK');
+            $mlPred = $frReport ? \App\Services\FraudMlService::predict($donation, $frReport) : null;
             $vStatus = $donation->verification_status ?? 'pending';
         @endphp
         <div class="mb-5 rounded-xl overflow-hidden" style="border:1px solid {{ $frColor }}33; background: linear-gradient(135deg, {{ $frColor }}0d, rgba(24,24,27,0.9));">
@@ -37,6 +151,7 @@
                     <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:{{ $frColor }}1f;"><i class="fas fa-shield-alt text-sm" style="color:{{ $frColor }};"></i></div>
                     <span class="text-sm font-bold text-d-100">Fraud Analysis</span>
                     <span class="text-[10px] font-bold px-2 py-1 rounded-full" style="background:{{ $frColor }}22;color:{{ $frColor }};">{{$frLabel}} — {{$frScore}}/100</span>
+                    @if($mlPred)<span class="text-[10px] font-bold px-2 py-1 rounded-full" style="background:rgba(139,92,246,.12);color:#a78bfa;">ML {{$mlPred['probability_pct']}}% fraud · {{$mlPred['confidence']}}% conf</span>@endif
                 </div>
                 <div class="flex items-center gap-2 text-[11px]">
                     <span class="px-2 py-1 rounded-md font-semibold" style="background:rgba(139,92,246,.12);color:#a78bfa;">Verification: {{ucfirst($vStatus)}}</span>
@@ -188,6 +303,60 @@
                         <div class="mt-1.5 text-[9.5px] leading-snug text-d-500">{{ __('Every action is recorded in the audit log with your identity and IP address.') }}</div>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <div class="mb-5 rounded-xl overflow-hidden" style="border:1px solid rgba(139,92,246,.3); background:linear-gradient(135deg, rgba(139,92,246,.07), rgba(24,24,27,.9));">
+            <div class="px-5 py-3 border-b flex items-center justify-between flex-wrap gap-2" style="border-color:rgba(139,92,246,.22);">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:rgba(139,92,246,.18);"><i class="fas fa-shield-halved text-sm" style="color:#a78bfa;"></i></div>
+                    <span class="text-sm font-bold text-d-100">Verification Checklist</span>
+                    @php
+                        $vcPending = optional($verifications)->where('status','pending')->count() ?? 0;
+                        $vcVerified = optional($verifications)->where('status','verified')->count() ?? 0;
+                        $vcRejected = optional($verifications)->where('status','rejected')->count() ?? 0;
+                    @endphp
+                    <span class="text-[10px] font-bold px-2 py-1 rounded-full" style="background:{{ $vcRejected ? 'rgba(239,68,68,.18);color:#f87171;' : ($vcPending ? 'rgba(251,191,36,.16);color:#fbbf24;' : 'rgba(34,197,94,.16);color:#4ade80;') }};">
+                        {{ $vcRejected ? $vcRejected.' Rejected' : ($vcPending ? $vcPending.' Pending' : $vcVerified.' Verified') }}
+                    </span>
+                </div>
+                <div class="flex items-center gap-2 text-[11px]">
+                    <form action="{{route('admin.verification.sync',$donation->id)}}" method="post">
+                        @csrf
+                        <button type="submit" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-white font-bold transition hover:opacity-90" style="background:linear-gradient(135deg,#7c3aed,#8b5cf6);">
+                            <i class="fas fa-sync text-[10px]"></i>{{ __('Create / Sync Checklist') }}
+                        </button>
+                    </form>
+                    @if(optional($verifications)->count())
+                        <a href="{{route('admin.verification.view', optional($verifications)->first()->id)}}" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-[11px] font-bold text-white transition hover:opacity-90" style="background:linear-gradient(135deg,#4338ca,#6366f1);">
+                            <i class="fas fa-clipboard-list text-[10px]"></i>{{ __('Open Verification Review') }}
+                        </a>
+                    @endif
+                </div>
+            </div>
+            <div class="p-5 grid grid-cols-1 md:grid-cols-4 gap-3">
+                @forelse(optional($verifications) ?? collect() as $vItem)
+                    @php
+                        $vBadge = ['pending' => ['Pending','rgba(251,191,36,.16)','#fbbf24','fa-clock'], 'verified' => ['Verified','rgba(34,197,94,.14)','#4ade80','fa-circle-check'], 'rejected' => ['Rejected','rgba(239,68,68,.16)','#f87171','fa-circle-xmark']][$vItem->status] ?? ['--','rgba(148,163,184,.1)','#94a3b8','fa-question'];
+                        $vIcon  = ['patient' => 'fa-person', 'hospital' => 'fa-hospital', 'document' => 'fa-file-medical', 'amount' => 'fa-coins'][$vItem->type] ?? 'fa-circle-check';
+                    @endphp
+                    <div class="rounded-xl px-3 py-3" style="background:rgba(15,23,42,.55);border:1px solid rgba(139,92,246,.18);">
+                        <div class="flex items-center justify-between gap-2">
+                            <span class="inline-flex items-center gap-1.5 text-[11px] font-bold text-d-100"><i class="fas {{ $vIcon }} text-[10px]" style="color:#a78bfa;"></i>{{ ucfirst($vItem->type) }}</span>
+                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9.5px] font-bold" style="background:{{ $vBadge[1] }};color:{{ $vBadge[2] }};"><i class="fas {{ $vBadge[3] }} text-[8px]"></i>{{ $vBadge[0] }}</span>
+                        </div>
+                        @if($vItem->verified_by)
+                            <div class="mt-1.5 text-[10px] text-d-400">by {{ $vItem->verified_by }} @if($vItem->updated_at) · {{ $vItem->updated_at->format('d M Y') }} @endif</div>
+                        @endif
+                        @if($vItem->notes)
+                            <div class="mt-1 text-[10px] leading-relaxed text-d-500">{{ $vItem->notes }}</div>
+                        @endif
+                    </div>
+                @empty
+                    <div class="md:col-span-4 flex items-center gap-2 text-[11px] text-d-400">
+                        <i class="fas fa-info-circle text-[10px]"></i>{{ __('No checklist yet — click "Create / Sync Checklist" to generate the standard verification items.') }}
+                    </div>
+                @endforelse
             </div>
         </div>
 

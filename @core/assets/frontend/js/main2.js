@@ -402,7 +402,7 @@
                 Nice Select
             ------------------*/
 
-            $('select').niceSelect();
+            $('select').not('.ncv-select').niceSelect();
 
 
     });

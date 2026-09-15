@@ -26,7 +26,7 @@
     $statTotal = \App\Cause::count();
     $statRaised = \App\Cause::sum('raised');
     $statGoal = \App\Cause::sum('amount');
-    $statVerified = \App\Cause::where('verification_status','approved')->count();
+    $statVerified = \App\Cause::whereIn('verification_status',['approved','verified'])->count();
     $statPending = \App\Cause::whereIn('verification_status',['pending','under_review'])->count();
     $statRejected = \App\Cause::where('verification_status','rejected')->count();
     $statFlagged = \App\Cause::where('fraud_score','>=',60)->count();
@@ -138,7 +138,7 @@
                             <div class="acx-thumb flex items-center justify-center" style="background:linear-gradient(135deg,#1a2036,#131728);"><i class="fas fa-image text-3xl" style="color:rgba(255,255,255,.12);"></i></div>
                         @endif
                         <div class="absolute top-3 left-3 flex items-center gap-1.5">
-                            @if($vstatus === 'approved')
+                            @if(in_array($vstatus, ['approved','verified'], true))
                                 <span class="acx-chip" style="background:rgba(16,185,129,.85);color:#fff;"><i class="fas fa-check-circle mr-1"></i>Verified</span>
                             @elseif($vstatus === 'rejected')
                                 <span class="acx-chip" style="background:rgba(239,68,68,.85);color:#fff;"><i class="fas fa-times-circle mr-1"></i>Rejected</span>
@@ -254,7 +254,9 @@
                         var matchF = (f === 'all')
                             || (f === 'flagged' && flagged === 'yes')
                             || (f === 'pending' && (vstatus === 'pending' || vstatus === 'under_review'))
-                            || (f !== 'flagged' && f !== 'pending' && status === f);
+                            || (f === 'approved' && (vstatus === 'approved' || vstatus === 'verified'))
+                            || (f === 'rejected' && vstatus === 'rejected')
+                            || ((f === 'publish' || f === 'draft' || f === 'archive' || f === 'banned') && status === f);
                         $card.toggle(matchQ && matchF);
                     });
                 }

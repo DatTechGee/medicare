@@ -7,6 +7,7 @@ use App\FraudReport;
 use App\Helpers\FraudEngine;
 use App\Helpers\FlashMsg;
 use App\Http\Controllers\Controller;
+use App\Services\FraudMlService;
 use App\Verification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -142,9 +143,14 @@ class FraudController extends Controller
         $fraudReport = FraudReport::with(['campaign', 'reviewer'])->findOrFail($id);
         $verifications = Verification::where('campaign_id', $fraudReport->campaign_id)->get();
 
+        $ml = $fraudReport->campaign
+            ? FraudMlService::predict($fraudReport->campaign, $fraudReport)
+            : null;
+
         return view(self::BASE_PATH . 'fraud-report-view', [
             'fraudReport' => $fraudReport,
             'verifications' => $verifications,
+            'ml' => $ml,
         ]);
     }
 
@@ -166,7 +172,7 @@ class FraudController extends Controller
         $campaign = Cause::find($fraudReport->campaign_id);
         if ($campaign) {
             if ($request->status === 'cleared') {
-                $campaign->update(['verification_status' => 'verified']);
+                $campaign->update(['verification_status' => 'approved']);
             } elseif ($request->status === 'flagged') {
                 $campaign->update(['status' => 'draft']);
             }

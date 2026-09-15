@@ -17,8 +17,8 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name', 'email', 'password','email_verified','email_verify_token','phone','address','state','city','zipcode','country_id','username','image','facebook_id','google_id',
-        'monthly_income','annual_income','income_source','nid_image','driving_license_image','passport_image','tax_verify_status',
-        'wallet_address','wallet_connected_at','wallet_verified','wallet_verified_at','wallet_verified_by','role','demo_eth_balance','status','campaign_permission'
+        'monthly_income','annual_income','income_source','nid_image','driving_license_image','passport_image','tax_verify_status','user_verify_nid','user_verify_address','user_verify_status',
+        'wallet_address','wallet_connected_at','wallet_verified','wallet_verified_at','wallet_verified_by','role','hospital_name','demo_eth_balance','status','campaign_permission'
     ];
 
     protected static function booted()
@@ -54,6 +54,11 @@ class User extends Authenticatable
     public function isDonor()
     {
         return $this->role !== 'patient';
+    }
+
+    public function isHospital()
+    {
+        return $this->role === 'hospital';
     }
 
     public function patientProfile()

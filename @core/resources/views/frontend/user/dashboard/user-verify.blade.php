@@ -18,6 +18,12 @@
                 <div class="tab-pane active" role="tabpanel">
                     @if($auth_user_user_verify_status == 2)
                         <div class="alert alert-success text-center"><strong>{{__('Verified')}}</strong></div>
+                    @elseif($auth_user_user_verify_status == 3)
+                        <div class="alert alert-danger text-center"><strong>{{__('Your verification documents were rejected. Please upload valid documents again below.')}}</strong></div>
+                    @elseif($auth_user_user_verify_status == 1)
+                        <div class="alert alert-warning text-center"><strong>{{__('Your verification is pending review.')}}</strong></div>
+                    @else
+                        <div class="alert alert-info text-center"><strong>{{__('Upload your official ID and an address proof to complete verification.')}}</strong></div>
                     @endif
                 <h2 class="title">{{__('User Verify')}}</h2>
             </div>

@@ -33,6 +33,15 @@ class LoginController extends Controller
         return route('homepage');
     }
 
+    protected function authenticated(Request $request, $user)
+    {
+        if ($user && method_exists($user, 'isHospital') && $user->isHospital()) {
+            return redirect()->route('user.hospital.dashboard');
+        }
+
+        return redirect()->intended(route('homepage'));
+    }
+
     /**
      * Create a new controller instance.
      *

@@ -114,6 +114,7 @@ Route::prefix('admin-home')->middleware(['setlang:backend','adminglobalVariable'
         Route::post('/reminder', 'CausesController@donation_reminder')->name('admin.donation.reminder');
         Route::post('/approve', 'CausesController@donation_approve')->name('admin.donation.approve');
         Route::post('/flag-fraud/{id}', 'CausesController@flag_fraud')->name('admin.donations.flag.fraud');
+        Route::get('/approvals', 'CausesController@approvals')->name('admin.campaign.approvals');
         Route::post('/change-status', 'CausesController@change_status')->name('admin.donation.change.status');
 
         Route::get('/settings', 'CausesController@settings')->name('admin.donations.settings');
@@ -486,6 +487,8 @@ Route::prefix('admin-home')->middleware(['setlang:backend','adminglobalVariable'
         Route::get('/user/tax/{id}', 'FrontendUserManageController@user_tax_view')->name('admin.frontend.user.tax.information');
         Route::get('/user/verify-information/{id}', 'FrontendUserManageController@user_verify_view')->name('admin.frontend.user.verify.information');
         Route::get('/user/verify-update/{id}', 'FrontendUserManageController@user_verify_update')->name('admin.frontend.user.verify.update');
+        Route::get('/user/verify-reject/{id}', 'FrontendUserManageController@user_verify_reject')->name('admin.frontend.user.verify.reject');
+        Route::get('/user/verify-reset/{id}', 'FrontendUserManageController@user_verify_reset')->name('admin.frontend.user.verify.reset');
         Route::post('/all-user/bulk-action', 'FrontendUserManageController@bulk_action')->name('admin.all.frontend.user.bulk.action');
         Route::post('/all-user/email-status', 'FrontendUserManageController@email_status')->name('admin.all.frontend.user.email.status');
         Route::post('/all-user/campaign-permission', 'FrontendUserManageController@campaign_permission')->name('admin.frontend.user.campaign.permission');
@@ -779,6 +782,10 @@ Route::group(['prefix' => 'admin-home/fraud', 'namespace' => 'Admin', 'middlewar
     Route::post('/bulk-action', 'FraudController@bulkAction')->name('admin.fraud.bulk.action');
 });
 
+Route::group(['prefix' => 'admin-home/payment-verify', 'namespace' => 'Admin', 'middleware' => ['setlang:backend','auth:admin','adminglobalVariable']], function () {
+    Route::get('/', 'CausesController@paymentVerify')->name('admin.payment.verify');
+});
+
 /*----------------------------------------------------------------
  | VERIFICATION MANAGEMENT ROUTES (ADMIN)
  |--------------------------------------------------------------*/
@@ -786,8 +793,11 @@ Route::group(['prefix' => 'admin-home/verifications', 'namespace' => 'Admin', 'm
     Route::get('/', 'VerificationController@index')->name('admin.verifications.all');
     Route::get('/view/{id}', 'VerificationController@view')->name('admin.verification.view');
     Route::post('/verify/{id}', 'VerificationController@verify')->name('admin.verification.verify');
-    Route::post('/reject/{id}', 'VerificationController@reject')->name('admin.verification.reject');
-    Route::post('/bulk-action', 'VerificationController@bulkAction')->name('admin.verification.bulk.action');
+Route::post('/reject/{id}', 'VerificationController@reject')->name('admin.verification.reject');
+        Route::post('/sync/{campaign_id}', 'VerificationController@sync')->name('admin.verification.sync');
+        Route::post('/verify-all/{campaign_id}', 'VerificationController@verifyAll')->name('admin.verification.verify.all');
+        Route::post('/reject-all/{campaign_id}', 'VerificationController@rejectAll')->name('admin.verification.reject.all');
+        Route::post('/bulk-action', 'VerificationController@bulkAction')->name('admin.verification.bulk.action');
 });
 
 /*----------------------------------------------------------------

@@ -38,6 +38,9 @@ class UserDashboardController extends Controller
     public function user_index()
     {
         $user = $this->logged_user_details();
+        if ($user->isHospital()) {
+            return redirect()->route('user.hospital.dashboard');
+        }
         $isPatient = $user->isPatient();
 
         $event_attendances = EventAttendance::where('user_id', $user->id)->count();

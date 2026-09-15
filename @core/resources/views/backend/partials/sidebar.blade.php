@@ -46,6 +46,10 @@
                 <a href="{{route("admin.verifications.all")}}" title="{{__("Verifications")}}"><i class="fas fa-check-double"></i><span>{{__("Verifications")}}</span></a>
             </li>
 
+            <li class="{{request()->is("admin-home/donations/approvals")?"active":""}}">
+                <a href="{{route("admin.campaign.approvals")}}" title="{{__("Campaign Approvals")}}"><i class="fas fa-file-circle-check"></i><span>{{__("Campaign Approvals")}}</span></a>
+            </li>
+
             <li class="{{request()->is("admin-home/campaigns/*/milestones*")?"active":""}}">
                 <a href="#" title="{{__("Milestones & Escrow")}}"><i class="fas fa-road"></i><span>{{__("Milestones & Escrow")}}</span></a>
             </li>
